@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using System.Diagnostics;
 using System.IO;
 using Newtonsoft.Json;
@@ -31,15 +32,17 @@ namespace Dasdaq.Dev.Agent.Services
         {
             // Start git to clone smart contracts
             var config = JsonConvert.DeserializeObject<Config>(File.ReadAllText("config.json"));
+            Console.WriteLine($"[Dasdaq Dev Agent] Cloning contracts repo: {config.Contracts}.");
             var startInfo = new ProcessStartInfo("git", $"clone {config.Contracts}");
             startInfo.UseShellExecute = false;
             startInfo.WorkingDirectory = _tempFolderPath;
             var process = Process.Start(startInfo);
             process.WaitForExit();
-            var contracts = Directory.EnumerateDirectories(Path.Combine(_tempFolderPath, config.Contracts));
+            var contracts = Directory.EnumerateDirectories(Path.Combine(_tempFolderPath, config.ContractsPath));
+            Console.WriteLine($"[Dasdaq Dev Agent] Downloaded {contracts.Count()} contracts.");
             foreach(var x in contracts)
             {
-                var name = Path.GetDirectoryName(x);
+                var name = Path.GetFileName(x);
                 if (File.Exists(Path.Combine(x, name + ".cpp")))
                 {
                     var cpp = File.ReadAllText(Path.Combine(x, name + ".cpp"));
@@ -56,9 +59,10 @@ namespace Dasdaq.Dev.Agent.Services
         public void InvokeContract(string name, string method, params object[] args)
         {
             // Start cleos to invoke a smart contract
+            Console.WriteLine($"[Dasdaq Dev Agent] Invoking {name} {method}.");
             var argsJson = JsonConvert.SerializeObject(args);
             var contractFolder = ConcatPath(name);
-            var startInfo = new ProcessStartInfo("/opt/eosio/bin/cleos", $"-u http://127.0.0.1:8888 --wallet-url http://127.0.0.1:8888 push action {method} '{argsJson}' -p {name}@active");
+            var startInfo = new ProcessStartInfo("/opt/eosio/bin/cleos", $"-u http://0.0.0.0:8888 --wallet-url http://0.0.0.0:8888 push action {name} {method} {argsJson} -p {name}@active");
             startInfo.UseShellExecute = false;
             var process = Process.Start(startInfo);
             process.WaitForExit();
@@ -84,6 +88,7 @@ namespace Dasdaq.Dev.Agent.Services
 
         private void PublishContract(string name)
         {
+            Console.WriteLine($"[Dasdaq Dev Agent] Publishing contract {name}.");
             var contractFolder = ConcatPath(name);
             _walletService.UnlockWallet();
             _accountService.CreateAccount(name);
@@ -97,6 +102,7 @@ namespace Dasdaq.Dev.Agent.Services
 
         private void CompileContract(string name)
         {
+            Console.WriteLine($"[Dasdaq Dev Agent] Compiling {name}.cpp");
             CompileContractWast(name);
             CompileContractAbi(name);
         }
@@ -125,7 +131,7 @@ namespace Dasdaq.Dev.Agent.Services
         {
             // Start cleos to map contract with account
             var contractFolder = ConcatPath(name);
-            var startInfo = new ProcessStartInfo("/opt/eosio/bin/cleos", $"-u http://127.0.0.1:8888 --wallet-url http://127.0.0.1:8888 set contract {name} {Path.Combine(contractFolder)} -p {name}@active");
+            var startInfo = new ProcessStartInfo("/opt/eosio/bin/cleos", $"-u http://0.0.0.0:8888 --wallet-url http://0.0.0.0:8888 set contract {name} {Path.Combine(contractFolder)} -p {name}@active");
             startInfo.UseShellExecute = false;
             var process = Process.Start(startInfo);
             process.WaitForExit();

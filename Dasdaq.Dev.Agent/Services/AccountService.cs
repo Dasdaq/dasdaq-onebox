@@ -13,8 +13,8 @@ namespace Dasdaq.Dev.Agent.Services
         public void CreateAccount(string name)
         {
             // Start cleos to unlock the wallet
-            var privateKey = JsonConvert.DeserializeObject<Config>(File.ReadAllText("config.json")).PrivateKey;
-            var startInfo = new ProcessStartInfo("/opt/eosio/bin/cleos", $"-u http://127.0.0.1:8888 --wallet-url http://127.0.0.1:8888 create account eosio {name} {privateKey} {privateKey}");
+            var publicKey = JsonConvert.DeserializeObject<Config>(File.ReadAllText("config.json")).PublicKey;
+            var startInfo = new ProcessStartInfo("/opt/eosio/bin/cleos", $"-u http://0.0.0.0:8888 --wallet-url http://0.0.0.0:8888 create account eosio {name} {publicKey} {publicKey}");
             startInfo.UseShellExecute = false;
             startInfo.RedirectStandardOutput = true;
             var process = Process.Start(startInfo);
