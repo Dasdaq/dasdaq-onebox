@@ -7,6 +7,7 @@ RUN mkdir /home/dasdaq_eos
 RUN mkdir /home/dasdaq_eos/agent
 RUN mkdir /home/dasdaq_eos/instances
 RUN mkdir /home/dasdaq_eos/temp
+RUN mkdir /home/dasdaq_eos/wallet
 RUN mkdir /home/dasdaq_eos/contracts
 
 COPY ./Dasdaq.Dev.Agent /home/dasdaq_eos/agent

@@ -22,7 +22,7 @@ namespace Dasdaq.Dev.Agent.Services
         public string GenerateWallet()
         {
             // Start cleos to create a wallet
-            var startInfo = new ProcessStartInfo("/opt/eosio/bin/cleos", "-u http://0.0.0.0:8888 --wallet-url http://0.0.0.0:8888 wallet create");
+            var startInfo = new ProcessStartInfo("/opt/eosio/bin/cleos", "-u http://127.0.0.1:8888 --wallet-url http://127.0.0.1:8888 wallet create");
             startInfo.UseShellExecute = false;
             startInfo.RedirectStandardOutput = true;
             var process = Process.Start(startInfo);
@@ -63,7 +63,7 @@ namespace Dasdaq.Dev.Agent.Services
         public void UnlockWallet()
         {
             // Start cleos to unlock the wallet
-            var startInfo = new ProcessStartInfo("/opt/eosio/bin/cleos", "-u http://0.0.0.0:8888 --wallet-url http://0.0.0.0:8888 wallet unlock --password " + GetPrivateKey());
+            var startInfo = new ProcessStartInfo("/opt/eosio/bin/cleos", "-u http://127.0.0.1:8888 --wallet-url http://127.0.0.1:8888 wallet unlock --password " + GetPrivateKey());
             startInfo.UseShellExecute = false;
             startInfo.RedirectStandardOutput = true;
             var process = Process.Start(startInfo);
@@ -81,7 +81,7 @@ namespace Dasdaq.Dev.Agent.Services
 
         private void ImportPrivateKey(string privateKey)
         {
-            var startInfo = new ProcessStartInfo("/opt/eosio/bin/cleos", "-u http://0.0.0.0:8888 --wallet-url http://0.0.0.0:8888 wallet import --private-key " + privateKey);
+            var startInfo = new ProcessStartInfo("/opt/eosio/bin/cleos", "-u http://127.0.0.1:8888 --wallet-url http://127.0.0.1:8888 wallet import --private-key " + privateKey);
             startInfo.UseShellExecute = false;
             startInfo.RedirectStandardOutput = true;
             var process = Process.Start(startInfo);

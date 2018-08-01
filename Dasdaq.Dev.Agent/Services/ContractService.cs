@@ -57,7 +57,7 @@ namespace Dasdaq.Dev.Agent.Services
             // Start cleos to invoke a smart contract
             var argsJson = JsonConvert.SerializeObject(args);
             var contractFolder = ConcatPath(name);
-            var startInfo = new ProcessStartInfo("/opt/eosio/bin/cleos", $"-u http://0.0.0.0:8888 --wallet-url http://0.0.0.0:8888 push action {method} '{argsJson}' -p {name}@active");
+            var startInfo = new ProcessStartInfo("/opt/eosio/bin/cleos", $"-u http://127.0.0.1:8888 --wallet-url http://127.0.0.1:8888 push action {method} '{argsJson}' -p {name}@active");
             startInfo.UseShellExecute = false;
             var process = Process.Start(startInfo);
             process.WaitForExit();
@@ -124,7 +124,7 @@ namespace Dasdaq.Dev.Agent.Services
         {
             // Start cleos to map contract with account
             var contractFolder = ConcatPath(name);
-            var startInfo = new ProcessStartInfo("/opt/eosio/bin/cleos", $"-u http://0.0.0.0:8888 --wallet-url http://0.0.0.0:8888 set contract {name} {Path.Combine(contractFolder)} -p {name}@active");
+            var startInfo = new ProcessStartInfo("/opt/eosio/bin/cleos", $"-u http://127.0.0.1:8888 --wallet-url http://127.0.0.1:8888 set contract {name} {Path.Combine(contractFolder)} -p {name}@active");
             startInfo.UseShellExecute = false;
             var process = Process.Start(startInfo);
             process.WaitForExit();

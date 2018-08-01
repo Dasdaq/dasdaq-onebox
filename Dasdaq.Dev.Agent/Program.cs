@@ -16,6 +16,9 @@ namespace Dasdaq.Dev.Agent
             eos.StartEosNodeAsync().ConfigureAwait(false);
             eos.WaitEosNodeAsync().Wait();
 
+            var wallet = provider.GetRequiredService<WalletService>();
+            wallet.GenerateWallet();
+
             var contract = provider.GetRequiredService<ContractService>();
             contract.InitializeEosioToken();
             contract.DownloadAndDeployContracts();
