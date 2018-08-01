@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2042
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dasdaq.Dev.Agent", "Dasdaq.Dev.Agent\Dasdaq.Dev.Agent.csproj", "{52045CA5-69E7-4B57-A897-E5B4C599F6A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dasdaq.Dev.InvokeContractSample", "Dasdaq.Dev.InvokeContractSample\Dasdaq.Dev.InvokeContractSample.csproj", "{C4492E43-2E22-4334-97C6-A96ECB709709}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{52045CA5-69E7-4B57-A897-E5B4C599F6A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52045CA5-69E7-4B57-A897-E5B4C599F6A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52045CA5-69E7-4B57-A897-E5B4C599F6A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52045CA5-69E7-4B57-A897-E5B4C599F6A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4492E43-2E22-4334-97C6-A96ECB709709}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4492E43-2E22-4334-97C6-A96ECB709709}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4492E43-2E22-4334-97C6-A96ECB709709}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4492E43-2E22-4334-97C6-A96ECB709709}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A3F3B713-4EF7-4DDB-8351-70A93F996BFE}
+	EndGlobalSection
+EndGlobal
