@@ -15,9 +15,10 @@ namespace Dasdaq.Dev.Agent.Services
         private WalletService _walletService;
         private AccountService _accountService;
 
-        public ContractService(WalletService walletService)
+        public ContractService(WalletService walletService, AccountService accountService)
         {
             _walletService = walletService;
+            _accountService = accountService;
         }
 
         public void InitializeEosioToken()
