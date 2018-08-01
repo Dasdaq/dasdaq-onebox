@@ -20,3 +20,5 @@ RUN wget -O packages-microsoft-prod.deb -q https://packages.microsoft.com/config
 RUN dpkg -i packages-microsoft-prod.deb
 RUN apt-get update
 RUN apt-get install dotnet-sdk-2.1 -y
+
+WORKDIR /home/dasdaq_eos/agent
