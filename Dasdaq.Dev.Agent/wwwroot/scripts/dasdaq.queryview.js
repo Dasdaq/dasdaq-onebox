@@ -1,4 +1,15 @@
-﻿var qv = {
+﻿function getFields(obj) {
+    var ret = [];
+    if (!obj || typeof obj !== 'object') return ret;
+
+    for (var x in obj) {
+        if (obj[x])
+            ret.push(x);
+    }
+    return ret;
+}
+
+var qv = {
     __cache: {},
     __cacheDictionary: {},
     __cacheExpire: {},
