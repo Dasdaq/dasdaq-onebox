@@ -36,9 +36,10 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
         [HttpPost("{id}")]
         [HttpPatch("{id}")]
         public ApiResult Put(string id, [FromBody] PutInstanceRequestBody request,
-            [FromServices] AgentContext ef, [FromServices] IServiceProvider services)
+            [FromServices] AgentContext ef, [FromServices] IServiceProvider services,
+            [FromServices] InstanceService ins)
         {
-            if (_dic.ContainsKey(id))
+            if (ins.IsInstanceExisted(id))
             {
                 return ApiResult(409, "The instance is already existed.");
             }
@@ -64,7 +65,7 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
         }
 
         [HttpDelete("{id}")]
-        public ApiResult Delete(string id, [FromServices] AgentContext ef)
+        public ApiResult Delete(string id, [FromServices] AgentContext ef, [FromServices] InstanceService ins)
         {
             var instance = ef.Instances.SingleOrDefault(x => x.Name == id);
             if (instance == null)
@@ -72,14 +73,7 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
                 return ApiResult(404, "Not Found");
             }
 
-            if (_dic.ContainsKey(id))
-            {
-                _dic[id].Kill();
-                _dic.Remove(id);
-            }
-
-            ef.Remove(instance);
-            ef.SaveChanges();
+            ins.StopInstance(id);
 
             return ApiResult(200, "Succeeded");
         }

@@ -25,6 +25,24 @@ namespace Dasdaq.Dev.Agent.Services
             return _dic.ContainsKey(name);
         }
 
+        public void StopInstance(string name)
+        {
+            var instance = _ef.Instances.SingleOrDefault(x => x.Name == name);
+            if (instance == null)
+            {
+                return;
+            }
+
+            if (_dic.ContainsKey(name))
+            {
+                _dic[name].Kill();
+                _dic.Remove(name);
+            }
+
+            _ef.Remove(instance);
+            _ef.SaveChanges();
+        }
+
         public Task DownloadAndStartInstanceAsync(string name, InstanceUploadMethod method, string data)
         {
             return Task.Run(() => {
