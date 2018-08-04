@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Dasdaq.Dev.Agent.Models
 {
@@ -27,6 +29,7 @@ namespace Dasdaq.Dev.Agent.Models
 
         public DateTime? ExitTime { get; set; }
 
+        [JsonConverter(typeof(StringEnumConverter))]
         public InstanceStatus Status { get; set; }
 
         public string StartScript { get; set; }

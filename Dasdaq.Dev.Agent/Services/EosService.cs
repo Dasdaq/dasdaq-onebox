@@ -139,6 +139,30 @@ namespace Dasdaq.Dev.Agent.Services
 
         public void SaveContract(string name, string cpp, string hpp = null)
         {
+            Contract contract;
+            var isCreate = false;
+            if (_ef.Contracts.Any(x => x.Name == name))
+            {
+                isCreate = false;
+                contract = _ef.Contracts.Single(x => x.Name == name);
+            }
+            else
+            {
+                isCreate = true;
+                contract = new Contract();
+                contract.Name = name;
+            }
+
+            contract.Cpp = cpp;
+            contract.Hpp = hpp;
+            contract.DeployedTime = DateTime.Now;
+            contract.Status = ContractStatus.Updating;
+            if (isCreate)
+            {
+                _ef.Add(contract);
+            }
+            _ef.SaveChanges();
+
             var contractFolder = ConcatPath(name);
             if (!Directory.Exists(contractFolder))
             {
@@ -291,6 +315,9 @@ namespace Dasdaq.Dev.Agent.Services
             UnlockWallet();
             CreateAccount(name);
             SetContractToAccount(name);
+            var contract = _ef.Contracts.Single(x => x.Name == name);
+            contract.Status = ContractStatus.Available;
+            _ef.SaveChanges();
         }
 
         private string ConcatPath(string name)

@@ -45,6 +45,15 @@ namespace Dasdaq.Dev.Agent.Services
 
         public Task DownloadAndStartInstanceAsync(string name, InstanceUploadMethod method, string data)
         {
+            _ef.Instances.Add(new Instance
+            {
+                UploadMethod = method,
+                Data = data,
+                Name = name,
+                Status = InstanceStatus.Running
+            });
+            _ef.SaveChanges();
+
             return Task.Factory.StartNew(() => {
                 try
                 {

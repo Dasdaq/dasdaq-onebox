@@ -44,20 +44,11 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
                 return ApiResult(409, "The instance is already existed.");
             }
 
-            ef.Instances.Add(new Instance
-            {
-                UploadMethod = request.Method,
-                Data = request.Data,
-                Name = id,
-                Status = InstanceStatus.Running
-            });
-            ef.SaveChanges();
-
-            Task.Factory.StartNew(() => {
+            Task.Factory.StartNew(async () => {
                 using (var serviceScope = services.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 using (var _ins = serviceScope.ServiceProvider.GetService<InstanceService>())
                 {
-                    _ins.DownloadAndStartInstanceAsync(id, request.Method, request.Data);
+                    await _ins.DownloadAndStartInstanceAsync(id, request.Method, request.Data);
                 }
             });
 

@@ -18,7 +18,7 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
         [HttpPut("init")]
         [HttpPost("init")]
         [HttpPatch("init")]
-        public ApiResult Init([FromServices] EosService eos)
+        public ApiResult Init()
         {
             if (_status != LaunchStatus.PendingLaunch)
             {
@@ -26,9 +26,13 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
             }
 
             Task.Factory.StartNew(() => {
-                _status = LaunchStatus.Launching;
-                eos.Launch();
-                _status = LaunchStatus.Launched;
+                using (var serviceScope = HttpContext.RequestServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+                using (var eos = serviceScope.ServiceProvider.GetService<EosService>())
+                {
+                    _status = LaunchStatus.Launching;
+                    eos.Launch();
+                    _status = LaunchStatus.Launched;
+                }
             });
 
 
@@ -76,50 +80,16 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
         public ApiResult Contract(string id, [FromBody] Contract model, 
             [FromServices] IServiceProvider services, [FromServices] AgentContext ef)
         {
-            Contract contract;
-            var isCreate = false;
-            if (ef.Contracts.Any(x => x.Name == id))
-            {
-                contract = ef.Contracts.Single(x => x.Name == id);
-            }
-            else
-            {
-                isCreate = true;
-                contract = new Contract();
-                contract.Name = id;
-            }
-
-            contract.Cpp = model.Cpp;
-            contract.Hpp = model.Hpp;
-            contract.DeployedTime = DateTime.Now;
-            contract.Status = ContractStatus.Updating;
-            ef.SaveChanges();
-
             Task.Factory.StartNew(() => {
                 using (var serviceScope = services.GetRequiredService<IServiceScopeFactory>().CreateScope())
-                using (var _ef = serviceScope.ServiceProvider.GetService<AgentContext>())
+                using (var _eos = serviceScope.ServiceProvider.GetService<EosService>())
                 {
-                    var _eos = serviceScope.ServiceProvider.GetRequiredService<EosService>();
-                    var _contract = _ef.Contracts.Single(x => x.Name == id);
-
-                    try
-                    {
-                        _eos.SaveContract(id, contract.Cpp, contract.Hpp);
-                        _eos.CompileAndPublishContract(id);
-                    }
-                    catch
-                    {
-                        _contract.Status = ContractStatus.Failed;
-                        _ef.SaveChanges();
-                        return;
-                    }
-                    
-                    _contract.Status = ContractStatus.Available;
-                    _ef.SaveChanges();
+                    _eos.SaveContract(id, model.Cpp, model.Hpp);
+                    _eos.CompileAndPublishContract(id);
                 }
             });
-           
-            return isCreate ? ApiResult(201, "Created") : ApiResult(202, "Accepted");
+
+            return ApiResult(200, "Succeeded");
         }
 
         [HttpGet("contract/{id}")]
