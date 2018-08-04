@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using Dasdaq.Dev.Agent.Services;
 using Dasdaq.Dev.Agent.Models;
 
@@ -24,12 +25,32 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
                 return ApiResult(409, $"The EOS is under {_status} status.");
             }
 
-            Task.Run(() => {
+            Task.Factory.StartNew(() => {
                 _status = LaunchStatus.Launching;
                 eos.Launch();
                 _status = LaunchStatus.Launched;
             });
-            
+
+
+            var instances = JsonConvert.DeserializeObject<Config>(System.IO.File.ReadAllText("config.json")).Instances;
+            Task.Factory.StartNew(() => {
+                using (var serviceScope = HttpContext.RequestServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+                using (var ins = serviceScope.ServiceProvider.GetService<InstanceService>())
+                {
+                    if (instances == null)
+                    {
+                        return;
+                    }
+                    foreach (var x in instances)
+                    {
+                        ins.DownloadAndStartInstanceAsync(
+                            System.IO.Path.GetFileNameWithoutExtension(x),
+                            InstanceUploadMethod.Git,
+                            x);
+                    }
+                }
+            });
+
             return ApiResult(201, "Lauching...");
         }
 
@@ -74,7 +95,7 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
             contract.Status = ContractStatus.Updating;
             ef.SaveChanges();
 
-            Task.Run(() => {
+            Task.Factory.StartNew(() => {
                 using (var serviceScope = services.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 using (var _ef = serviceScope.ServiceProvider.GetService<AgentContext>())
                 {

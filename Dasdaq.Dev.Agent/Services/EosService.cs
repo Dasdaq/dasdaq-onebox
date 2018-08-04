@@ -33,10 +33,6 @@ namespace Dasdaq.Dev.Agent.Services
             {
                 Directory.CreateDirectory(_instancesPath);
             }
-            if (!Directory.Exists(_privateKeyFilePath))
-            {
-                Directory.CreateDirectory(_privateKeyFilePath);
-            }
             if (!Directory.Exists(_contractsFolderPath))
             {
                 Directory.CreateDirectory(_contractsFolderPath);
@@ -51,7 +47,7 @@ namespace Dasdaq.Dev.Agent.Services
         
         public void Launch()
         {
-            lock (this)
+            try
             {
                 if (Process.GetProcessesByName("nodeos").Length > 0)
                 {
@@ -62,6 +58,10 @@ namespace Dasdaq.Dev.Agent.Services
                 GenerateWallet();
                 InitializeEosioToken();
                 DownloadAndDeployContracts();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("[Dasdaq Dev Agent] An error occurred while launching EOS: \r\n" + ex.ToString());
             }
         }
 
@@ -154,7 +154,7 @@ namespace Dasdaq.Dev.Agent.Services
 
         public Task StartEosNodeAsync()
         {
-            return Task.Run(()=> {
+            return Task.Factory.StartNew(()=> {
                 // Start bash to launch nodeos
                 var startInfo = new ProcessStartInfo("/opt/eosio/bin/nodeos", "-e -p eosio --plugin eosio::wallet_api_plugin --plugin eosio::wallet_plugin --plugin eosio::producer_plugin --plugin eosio::history_plugin --plugin eosio::chain_api_plugin --plugin eosio::history_api_plugin --plugin eosio::http_plugin -d /mnt/dev/data --config-dir /mnt/dev/config --http-server-address=0.0.0.0:8888 --access-control-allow-origin=* --contracts-console --http-validate-host=false");
                 startInfo.UseShellExecute = false;

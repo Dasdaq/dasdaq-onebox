@@ -12,7 +12,7 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
         [HttpPost("stop")]
         public ApiResult Stop()
         {
-            Task.Run(async () => {
+            Task.Factory.StartNew(async () => {
                 await Task.Delay(1000);
                 Environment.Exit(0);
             });

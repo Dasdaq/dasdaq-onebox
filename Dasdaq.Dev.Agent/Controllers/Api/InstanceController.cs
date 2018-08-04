@@ -53,7 +53,7 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
             });
             ef.SaveChanges();
 
-            Task.Run(() => {
+            Task.Factory.StartNew(() => {
                 using (var serviceScope = services.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 using (var _ins = serviceScope.ServiceProvider.GetService<InstanceService>())
                 {
