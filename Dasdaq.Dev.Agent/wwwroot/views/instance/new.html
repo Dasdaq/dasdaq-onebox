@@ -1,0 +1,24 @@
+﻿<div>
+    <div class="nav-bar">
+        <a v-on:click="$root.redirect('/instance')"><i class="fa fa-chevron-left"></i> 返回实例列表</a>
+        <a v-on:click="upload()" class="right"><i class="fa fa-upload"></i> 新建实例</a>
+        <div class="clear"></div>
+    </div>
+    <div class="content">
+        <div class="form-label">实例名称</div>
+        <div class="form-input"><input class="textbox" v-model="name" placeholder="实例名称，如frontend" /></div>
+        <div class="form-label">上传方式</div>
+        <div class="form-input">
+            <div v-on:click="method = 'Zip'" v-bind:class="{ 'active': method === 'Zip' }" class="upload-method"><i class="fa fa-file-zip-o"></i> ZIP压缩包</div>
+            <div v-on:click="method = 'Git'" v-bind:class="{ 'active': method === 'Git' }" class="upload-method"><i class="fa fa-github"></i> 从Git克隆</div>
+        </div>
+        <div v-if="method === 'Git'" class="form-label">Git Repository URL</div>
+        <div v-if="method === 'Git'" class="form-input"><input class="textbox" v-model="gitUrl" placeholder="请在此处填写Git仓库地址" /></div>
+        <div v-if="method === 'Zip'" class="form-label">选择ZIP压缩包文件</div>
+        <div v-if="method === 'Zip' && fileData" class="form-label status green">已选择ZIP文件</div>
+        <div v-if="method === 'Zip'" class="form-input">
+            <div v-on:click="selectFile()" class="select-file-button">{{ fileData ? '更换ZIP文件' : '上传ZIP文件' }}</div>
+            <input type="file" id="file" style="display: none" />
+        </div>
+    </div>
+</div>

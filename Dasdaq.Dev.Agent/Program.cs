@@ -1,32 +1,26 @@
 ﻿using System;
-using Microsoft.Extensions.DependencyInjection;
-using Dasdaq.Dev.Agent.Services;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Dasdaq.Dev.Agent
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            var collection = new ServiceCollection();
-            collection.AddAgentServices();
-            var provider = collection.BuildServiceProvider();
-
-            var eos = provider.GetRequiredService<EosService>();
-            eos.StartEosNodeAsync().ConfigureAwait(false);
-            eos.WaitEosNodeAsync().Wait();
-
-            var wallet = provider.GetRequiredService<WalletService>();
-            wallet.GenerateWallet();
-
-            var contract = provider.GetRequiredService<ContractService>();
-            contract.InitializeEosioToken();
-            contract.DownloadAndDeployContracts();
-
-            while(true)
-            {
-                Console.Read();
-            }
+            BuildWebHost(args).Run();
         }
+
+        public static IWebHost BuildWebHost(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>()
+                .UseUrls("http://0.0.0.0:5500")
+                .Build();
     }
 }

@@ -1,0 +1,28 @@
+﻿<div>
+    <div class="nav-bar">
+        <a v-on:click="$root.redirect('/')"><i class="fa fa-chevron-left"></i> 返回菜单</a>
+        <a v-on:click="$root.redirect('/instance/new')" class="right"><i class="fa fa-plus"></i> 新建实例</a>
+        <div class="clear"></div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <td>NAME</td>
+                <td>START TIME</td>
+                <td>STATUS</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="x in values">
+                <td>{{ x.name }}</td>
+                <td>{{ x.name }}@active</td>
+                <td>
+                    <span v-if="x.status === Available" class="status green">Active</span>
+                    <span v-if="x.status === Updating" class="status blue">Updating</span>
+                    <span v-if="x.status === Failed" class="status red">Failed</span>
+                </td>
+                <td>{{ x.deployedTime }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
