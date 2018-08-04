@@ -24,3 +24,4 @@ RUN sudo apt-get install nodejs -y
 RUN npm install yarn -g
 
 WORKDIR /home/dasdaq_eos/agent
+RUN dotnet build
