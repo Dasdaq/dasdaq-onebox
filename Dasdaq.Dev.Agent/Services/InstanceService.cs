@@ -5,13 +5,60 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
 using System.IO.Compression;
+using Microsoft.Extensions.DependencyInjection;
+using Dasdaq.Dev.Agent.Models;
 
 namespace Dasdaq.Dev.Agent.Services
 {
-    public class InstanceService
+    public class InstanceService : IDisposable
     {
-        public InstanceService()
-        { }
+        private AgentContext _ef;
+        private static Dictionary<string, Process> _dic = new Dictionary<string, Process>();
+
+        public InstanceService(AgentContext ef)
+        {
+            _ef = ef;
+        }
+
+        public bool IsInstanceExisted(string name)
+        {
+            return _dic.ContainsKey(name);
+        }
+
+        public Task DownloadAndStartInstanceAsync(string name, InstanceUploadMethod method, string data)
+        {
+            return Task.Run(() => {
+                try
+                {
+                    switch (method)
+                    {
+                        case InstanceUploadMethod.Git:
+                            CloneGitRepo(name, data);
+                            break;
+                        case InstanceUploadMethod.Zip:
+                            ExtractZip(name, data);
+                            break;
+                        default:
+                            throw new NotSupportedException();
+                    }
+                    var process = StartInstance(name);
+                    _dic.Add(name, process);
+                    process.WaitForExit();
+                    var _instance = _ef.Instances.Single(x => x.Name == name);
+                    _instance.ExitCode = process.ExitCode;
+                    _instance.ExitTime = DateTime.Now;
+                    _instance.Status = _instance.ExitCode == 0 ? InstanceStatus.Succeeded : InstanceStatus.Failed;
+                    _ef.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    var _instance = _ef.Instances.Single(x => x.Name == name);
+                    _instance.Status = InstanceStatus.Failed;
+                    _ef.SaveChanges();
+                    Console.WriteLine("[Dasdaq Dev Agent] An error occurred: \r\n" + ex.ToString());
+                }
+            });
+        }
 
         public void ExtractZip(string name, string data)
         {
@@ -74,6 +121,11 @@ namespace Dasdaq.Dev.Agent.Services
             }
             Directory.CreateDirectory(workDirectory);
             return workDirectory;
+        }
+
+        public void Dispose()
+        {
+            this._ef.Dispose();
         }
     }
 }

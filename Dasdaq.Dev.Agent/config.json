@@ -3,5 +3,5 @@
   "privateKey": "5J8XWnJizAmLBsraD2ZwrFJrndHQ5RKJTfxGkQb8EDsqhZSSJ7F",
   "contracts": "https://github.com/Andoromeda-Foundation/dapp-examples",
   "contractsPath": "dapp-examples/Contracts/EOS",
-  "instances": []
+  "instances": [ "https://github.com/Dasdaq/Dasdaq-web" ]
 }

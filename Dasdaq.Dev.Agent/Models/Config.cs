@@ -1,4 +1,6 @@
-﻿namespace Dasdaq.Dev.Agent.Models
+﻿using System.Collections.Generic;
+
+namespace Dasdaq.Dev.Agent.Models
 {
     public class Config
     {
@@ -9,5 +11,7 @@
         public string Contracts { get; set; }
 
         public string ContractsPath { get; set; }
+
+        public IEnumerable<string> Instances { get; set; }
     }
 }

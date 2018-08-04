@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Dasdaq.Dev.Agent.Models;
 using Dasdaq.Dev.Agent.Services;
+using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace Dasdaq.Dev.Agent
@@ -35,6 +39,29 @@ namespace Dasdaq.Dev.Agent
             app.UseMvcWithDefaultRoute();
             app.UseVueMiddleware();
             app.UseDeveloperExceptionPage();
+            this.PreinstallInstances(app.ApplicationServices);
+        }
+
+        private void PreinstallInstances(IServiceProvider services)
+        {
+            var instances = JsonConvert.DeserializeObject<Config>(File.ReadAllText("config.json")).Instances;
+            Task.Run(() => {
+                using (var serviceScope = services.GetRequiredService<IServiceScopeFactory>().CreateScope())
+                using (var ins = serviceScope.ServiceProvider.GetService<InstanceService>())
+                {
+                    if (instances == null)
+                    {
+                        return;
+                    }
+                    foreach (var x in instances)
+                    {
+                        ins.DownloadAndStartInstanceAsync(
+                            Path.GetFileNameWithoutExtension(x), 
+                            InstanceUploadMethod.Git, 
+                            x);
+                    }
+                }
+            });
         }
     }
 }

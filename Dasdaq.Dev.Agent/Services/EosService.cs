@@ -12,7 +12,7 @@ using Dasdaq.Dev.Agent.Models;
 
 namespace Dasdaq.Dev.Agent.Services
 {
-    public class EosService
+    public class EosService : IDisposable
     {
         internal const string _dasdaqRootPath = "/home/dasdaq_eos";
         internal const string _instancesPath = "/home/dasdaq_eos/instances";
@@ -342,6 +342,11 @@ namespace Dasdaq.Dev.Agent.Services
             startInfo.RedirectStandardOutput = true;
             var process = Process.Start(startInfo);
             process.WaitForExit();
+        }
+
+        public void Dispose()
+        {
+            this._ef.Dispose();
         }
     }
 }
