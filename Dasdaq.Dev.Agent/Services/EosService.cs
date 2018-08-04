@@ -20,7 +20,7 @@ namespace Dasdaq.Dev.Agent.Services
         internal const string _contractsFolderPath = "/home/dasdaq_eos/contracts";
         internal const string _tempFolderPath = "/home/dasdaq_eos/temp";
 
-        private HttpClient _client = new HttpClient() { BaseAddress = new Uri("http://127.0.0.1:8888") };
+        private static HttpClient _client = new HttpClient() { BaseAddress = new Uri("http://127.0.0.1:8888") };
         private AgentContext _ef;
 
         public EosService(AgentContext ef)

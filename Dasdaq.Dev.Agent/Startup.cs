@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Dasdaq.Dev.Agent.Models;
+using Dasdaq.Dev.Agent.Services;
 
 namespace Dasdaq.Dev.Agent
 {
@@ -18,11 +19,13 @@ namespace Dasdaq.Dev.Agent
             services.AddMvc();
             services.AddMemoryCache()
                 .AddDbContext<AgentContext>(x => x.UseInMemoryDatabase());
+            services.AddAgentServices();
         }
 
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseErrorHandlingMiddleware();
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();
             app.UseVueMiddleware();

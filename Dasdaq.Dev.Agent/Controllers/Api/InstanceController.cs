@@ -58,26 +58,33 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
                 using (var serviceScope = services.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 using (var _ef = serviceScope.ServiceProvider.GetService<AgentContext>())
                 {
-                    var _ins = serviceScope.ServiceProvider.GetRequiredService<InstanceService>();
-                    switch (request.Method)
+                    try
                     {
-                        case InstanceUploadMethod.Git:
-                            _ins.CloneGitRepo(id, request.Data);
-                            break;
-                        case InstanceUploadMethod.Zip:
-                            _ins.ExtractZip(id, request.Data);
-                            break;
-                        default:
-                            throw new NotSupportedException();
+                        var _ins = serviceScope.ServiceProvider.GetRequiredService<InstanceService>();
+                        switch (request.Method)
+                        {
+                            case InstanceUploadMethod.Git:
+                                _ins.CloneGitRepo(id, request.Data);
+                                break;
+                            case InstanceUploadMethod.Zip:
+                                _ins.ExtractZip(id, request.Data);
+                                break;
+                            default:
+                                throw new NotSupportedException();
+                        }
+                        var process = _ins.StartInstance(id);
+                        _dic.Add(id, process);
+                        process.WaitForExit();
+                        var _instance = _ef.Instances.Single(x => x.Name == id);
+                        _instance.ExitCode = process.ExitCode;
+                        _instance.ExitTime = DateTime.Now;
+                        _instance.Status = _instance.ExitCode == 0 ? InstanceStatus.Succeeded : InstanceStatus.Failed;
+                        _ef.SaveChanges();
                     }
-                    var process = _ins.StartInstance(id);
-                    _dic.Add(id, process);
-                    process.WaitForExit();
-                    var _instance = _ef.Instances.Single(x => x.Name == id);
-                    _instance.ExitCode = process.ExitCode;
-                    _instance.ExitTime = DateTime.Now;
-                    _instance.Status = _instance.ExitCode == 0 ? InstanceStatus.Succeeded : InstanceStatus.Failed;
-                    _ef.SaveChanges();
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("[Dasdaq Dev Agent] An error occurred: \r\n" + ex.ToString());
+                    }
                 }
             });
 

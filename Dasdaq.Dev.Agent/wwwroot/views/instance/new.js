@@ -14,11 +14,17 @@ component.created = function () {
 component.methods = {
     upload: function () {
         var self = this;
+        app.notification("pending", "正在部署实例" + self.name + "...");
         qv.put('/api/instance/' + this.name, {
-            uploadMethod: self.method,
-            data: self.method === 'Zip' ? fileData : gitUrl
-        }).then(x => {
-            // TODO
+            method: self.method,
+            data: self.method === 'Zip' ? self.fileData : self.gitUrl
+        })
+        .then(x => {
+            app.notification("succeeded", "实例" + self.name + "部署成功，正在启动...");
+            app.redirect('/instance');
+        })
+        .catch(err => {
+            app.notification("error", "实例" + self.name + "部署失败", err.responseJSON.msg);
         });
     },
     selectFile: function () {

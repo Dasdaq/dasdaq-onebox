@@ -10,6 +10,9 @@ namespace Dasdaq.Dev.Agent.Services
 {
     public class InstanceService
     {
+        public InstanceService()
+        { }
+
         public void ExtractZip(string name, string data)
         {
             Console.WriteLine($"[Dasdaq Dev Agent] Extracting zip file: {name}.zip");
@@ -42,10 +45,19 @@ namespace Dasdaq.Dev.Agent.Services
             {
                 throw new InvalidDataException("Please make sure there will be only 1 run.sh file in the instance files.");
             }
+            ChmodRunScript(runFile.Single());
             var startInfo = new ProcessStartInfo("bash", $"-c {runFile.Single()}");
             startInfo.UseShellExecute = false;
-            startInfo.WorkingDirectory = workDirectory;
+            startInfo.WorkingDirectory = Path.GetDirectoryName(runFile.Single());
             return Process.Start(startInfo);
+        }
+
+        private void ChmodRunScript(string runFile)
+        {
+            var startInfo = new ProcessStartInfo("chmod", $"u+x {runFile}");
+            startInfo.UseShellExecute = false;
+            var process = Process.Start(startInfo);
+            process.WaitForExit();
         }
 
         private string GetWorkingDirectory(string name)

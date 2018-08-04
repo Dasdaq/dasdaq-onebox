@@ -15,13 +15,8 @@
         <tbody>
             <tr v-for="x in values">
                 <td>{{ x.name }}</td>
-                <td>{{ x.name }}@active</td>
-                <td>
-                    <span v-if="x.status === Available" class="status green">Active</span>
-                    <span v-if="x.status === Updating" class="status blue">Updating</span>
-                    <span v-if="x.status === Failed" class="status red">Failed</span>
-                </td>
-                <td>{{ x.deployedTime }}</td>
+                <td>{{ x.startTime }}@active</td>
+                <td>{{ x.status }}</td>
             </tr>
         </tbody>
     </table>
