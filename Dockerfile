@@ -1,4 +1,4 @@
-FROM eosio/eos-dev:v1.1.2
+FROM eosio/eos-dev:v1.1.1
 
 WORKDIR /workdir
 
