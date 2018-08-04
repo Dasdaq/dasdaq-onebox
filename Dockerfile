@@ -11,7 +11,6 @@ RUN mkdir /home/dasdaq_eos/wallet
 RUN mkdir /home/dasdaq_eos/contracts
 
 COPY ./Dasdaq.Dev.Agent /home/dasdaq_eos/agent
-COPY ./Dasdaq.Dev.InvokeContractSample /home/dasdaq_eos/instances/sample
 
 # Install .NET Core & Node.js
 RUN wget -O libicu55.deb http://archive.ubuntu.com/ubuntu/pool/main/i/icu/libicu55_55.1-7ubuntu0.4_amd64.deb
