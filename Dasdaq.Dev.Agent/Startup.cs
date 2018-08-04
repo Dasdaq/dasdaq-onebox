@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Dasdaq.Dev.Agent.Models;
 using Dasdaq.Dev.Agent.Services;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace Dasdaq.Dev.Agent
 {
@@ -20,6 +16,12 @@ namespace Dasdaq.Dev.Agent
             services.AddMemoryCache()
                 .AddDbContext<AgentContext>(x => x.UseInMemoryDatabase());
             services.AddAgentServices();
+            services.AddSwaggerGen(x =>
+            {
+                x.SwaggerDoc("v1", new Info() { Title = "Dasdaq", Version = "v1" });
+                x.DocInclusionPredicate((docName, apiDesc) => apiDesc.HttpMethod != null);
+                x.DescribeAllEnumsAsStrings();
+            });
         }
 
 
@@ -27,6 +29,9 @@ namespace Dasdaq.Dev.Agent
         {
             app.UseErrorHandlingMiddleware();
             app.UseStaticFiles();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Dasdaq"));
             app.UseMvcWithDefaultRoute();
             app.UseVueMiddleware();
             app.UseDeveloperExceptionPage();
