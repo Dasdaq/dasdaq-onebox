@@ -256,3 +256,12 @@ pre {
     color: #fff;
     text-align: center;
 }
+
+.table-command {
+    color: rgba(255,255,255,0.5);
+    transition: color 0.2s linear;
+}
+
+.table-command:hover {
+    color: #fff;
+}
