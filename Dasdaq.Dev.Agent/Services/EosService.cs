@@ -53,6 +53,7 @@ namespace Dasdaq.Dev.Agent.Services
                 {
                     return;
                 }
+                EnsureRemoveDefaultWallet();
                 StartEosNodeAsync().ConfigureAwait(false);
                 WaitEosNodeAsync().Wait();
                 GenerateWallet();
@@ -180,7 +181,7 @@ namespace Dasdaq.Dev.Agent.Services
         {
             return Task.Factory.StartNew(()=> {
                 // Start bash to launch nodeos
-                var startInfo = new ProcessStartInfo("/opt/eosio/bin/nodeos", "-e -p eosio --plugin eosio::wallet_api_plugin --plugin eosio::wallet_plugin --plugin eosio::producer_plugin --plugin eosio::history_plugin --plugin eosio::chain_api_plugin --plugin eosio::history_api_plugin --plugin eosio::http_plugin -d /mnt/dev/data --config-dir /mnt/dev/config --http-server-address=0.0.0.0:8888 --access-control-allow-origin=* --contracts-console --http-validate-host=false");
+                var startInfo = new ProcessStartInfo("/opt/eosio/bin/nodeos", "-e -p eosio --plugin eosio::wallet_api_plugin --plugin eosio::wallet_plugin --plugin eosio::producer_plugin --plugin eosio::history_plugin --plugin eosio::chain_api_plugin --plugin eosio::history_api_plugin --plugin eosio::http_plugin -d /mnt/dev/data --config-dir /mnt/dev/config --http-server-address=0.0.0.0:8888 --access-control-allow-origin=* --contracts-console --http-validate-host=false --delete-all-blocks");
                 startInfo.UseShellExecute = false;
                 var process = Process.Start(startInfo);
                 process.WaitForExit();
@@ -306,6 +307,18 @@ namespace Dasdaq.Dev.Agent.Services
         private class GetChainInfoResponseBody
         {
             public string chain_id { get; set; }
+        }
+
+        private void EnsureRemoveDefaultWallet()
+        {
+            // Start cleos to unlock the wallet
+            var walletPath = "/mnt/dev/data/default.wallet";
+            var startInfo = new ProcessStartInfo("rm", "-rf " + walletPath);
+            startInfo.UseShellExecute = false;
+            startInfo.RedirectStandardOutput = true;
+            var process = Process.Start(startInfo);
+            process.WaitForExit();
+            var output = process.StandardOutput.ReadToEnd();
         }
 
         private void PublishContract(string name)
