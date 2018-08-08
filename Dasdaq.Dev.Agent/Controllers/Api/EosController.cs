@@ -104,6 +104,20 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
             return ApiResult(contract);
         }
 
+        [HttpPut("wallet")]
+        [HttpPost("wallet")]
+        [HttpPatch("wallet")]
+        public ApiResult Wallet([FromServices] EosService eos, [FromBody] PatchWalletRequest request)
+        {
+            if (request.Status != "Unlocked")
+            {
+                return ApiResult(400, "Invalid argument: " + request.Status);
+            }
+
+            eos.UnlockWallet();
+            return ApiResult(200, "Succeeded");
+        }
+
 
         private enum LaunchStatus
         {
