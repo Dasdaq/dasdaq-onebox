@@ -118,6 +118,34 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
             return ApiResult(200, "Succeeded");
         }
 
+        [HttpGet("account")]
+        public ApiResult<IEnumerable<string>> Account([FromServices] AgentContext ef)
+        {
+            return ApiResult<IEnumerable<string>>(ef.Accounts.Select(x => x.Name).ToList());
+        }
+
+        [HttpGet("currency")]
+        public ApiResult<IEnumerable<string>> Currency([FromServices] AgentContext ef)
+        {
+            return ApiResult<IEnumerable<string>>(ef.Currencies.Select(x => x.Name).ToList());
+        }
+
+        [HttpPut("currency/{currency}")]
+        public ApiResult Currency(
+            string currency, [FromServices] EosService eos,
+            [FromBody] PutCurrencyRequest request)
+        {
+            eos.CreateCurrency(currency, request.account, request.amount);
+            return ApiResult(200, "Succeeded");
+        }
+
+        [HttpPost("currency/{currency}/account/{account}")]
+        public ApiResult Currency(string currency, string account,
+            [FromBody] PostCurrencyRequest request, [FromServices] EosService eos)
+        {
+            eos.IssueCurrency(currency, account, request.amount);
+            return ApiResult(200, "Succeeded");
+        }
 
         private enum LaunchStatus
         {

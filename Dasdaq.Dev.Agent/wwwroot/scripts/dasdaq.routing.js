@@ -6,6 +6,7 @@
     '/instance/new': null,
     '/instance/:id/edit': { id: '[a-zA-Z0-9-_]{4,128}' },
     '/config': null,
+    '/currency': null,
     '/404': null
 });
 

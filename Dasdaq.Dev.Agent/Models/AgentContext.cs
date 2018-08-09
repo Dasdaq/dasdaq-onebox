@@ -11,5 +11,9 @@ namespace Dasdaq.Dev.Agent.Models
         public DbSet<Contract> Contracts { get; set; }
 
         public DbSet<Instance> Instances { get; set; }
+
+        public DbSet<Currency> Currencies { get; set; }
+
+        public DbSet<Account> Accounts { get; set; }
     }
 }

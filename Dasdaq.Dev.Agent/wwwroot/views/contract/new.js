@@ -14,8 +14,10 @@ component.methods = {
         qv.put('/api/eos/contract/' + this.name, {
             cpp: $('#code-editor')[0].editor.getValue(),
             hpp: $('#code-editor2')[0].editor.getValue()
-        }).then(x => {
+        })
+        .then(x => {
             app.notification("succeeded", "智能合约" + self.name + "部署成功");
+            qv.createView('/api/eos/contract', {}, 5 * 1000).refresh();
             app.redirect('/contract');
         })
         .catch(err => {

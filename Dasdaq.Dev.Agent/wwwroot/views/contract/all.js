@@ -1,12 +1,12 @@
 ﻿component.data = function () {
     return {
-        values: []
+        values: [],
     };
 };
 
 component.created = function () {
     var self = this;
-    qv.createView('/api/eos/contract', {}, 30 * 1000).fetch(x => {
+    qv.createView('/api/eos/contract', {}, 5 * 1000).fetch(x => {
         self.values = x.data;
     });
 };

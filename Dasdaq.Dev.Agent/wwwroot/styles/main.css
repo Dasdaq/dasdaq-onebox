@@ -52,6 +52,10 @@ body {
     background: linear-gradient(#8e8e8e,#595959);
 }
 
+.button.orange {
+    background: linear-gradient(#f77a14,#bb5d11);
+}
+
 .button-outer {
     text-align: center;
     width: 100px;

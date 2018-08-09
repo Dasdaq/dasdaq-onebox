@@ -6,7 +6,7 @@
 
 component.created = function () {
     var self = this;
-    qv.createView('/api/instance', {}, 30 * 1000).fetch(x => {
+    qv.createView('/api/instance', {}, 5 * 1000).fetch(x => {
         self.values = x.data;
     });
 };

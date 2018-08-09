@@ -14,6 +14,7 @@ namespace Dasdaq.Dev.Agent.Services
 {
     public class EosService : IDisposable
     {
+        internal const string eosioToken = "eosio.token";
         internal const string _dasdaqRootPath = "/home/dasdaq_eos";
         internal const string _instancesPath = "/home/dasdaq_eos/instances";
         internal const string _privateKeyFilePath = "/home/dasdaq_eos/wallet/privatekey.txt";
@@ -57,7 +58,7 @@ namespace Dasdaq.Dev.Agent.Services
                 StartEosNodeAsync().ConfigureAwait(false);
                 WaitEosNodeAsync().Wait();
                 GenerateWallet();
-                InitializeEosioToken();
+                DeployEosioToken();
                 DownloadAndDeployContracts();
             }
             catch (Exception ex)
@@ -75,14 +76,32 @@ namespace Dasdaq.Dev.Agent.Services
             startInfo.RedirectStandardOutput = true;
             var process = Process.Start(startInfo);
             process.WaitForExit();
+            _ef.Accounts.Add(new Account
+            {
+                Name = name
+            });
+            _ef.SaveChanges();
+        }
+        
+        public void CreateCurrency(string currency, string account, double amount)
+        {
+            InvokeContract(eosioToken, "create", eosioToken, account, $"{amount.ToString("0.0000")} {currency}");
+            _ef.Currencies.Add(new Currency
+            {
+                Name = account,
+                BaseAccount = account
+            });
+            _ef.SaveChanges();
         }
 
-        public void InitializeEosioToken()
+        public void IssueCurrency(string currency, string account, double amount)
         {
-            const string eosioToken = "eosio.token";
-            SaveContract(eosioToken, File.ReadAllText($"Token/{eosioToken}.cpp"), File.ReadAllText($"Token/{eosioToken}.hpp"));
-            CompileAndPublishContract(eosioToken);
-            InvokeContract(eosioToken, "create", "eosio", "1000000000.0000 SYS");
+            var cur = _ef.Currencies.SingleOrDefault(x => x.Name == currency);
+            if (cur == null)
+            {
+                throw new KeyNotFoundException(currency);
+            }
+            InvokeContract(eosioToken, "issue", cur.BaseAccount, account, $"{amount.ToString("0.0000")} {currency}", "");
         }
 
         public void DownloadAndDeployContracts()
@@ -126,13 +145,13 @@ namespace Dasdaq.Dev.Agent.Services
             PublishContract(name);
         }
 
-        public void InvokeContract(string name, string method, params object[] args)
+        public void InvokeContract(string contractAccount, string method, string invokerAccount, params object[] args)
         {
             // Start cleos to invoke a smart contract
-            Console.WriteLine($"[Dasdaq Dev Agent] Invoking {name} {method}.");
+            Console.WriteLine($"[Dasdaq Dev Agent] Invoking {contractAccount} {method}.");
             var argsJson = JsonConvert.SerializeObject(args);
-            var contractFolder = ConcatPath(name);
-            var startInfo = new ProcessStartInfo("/opt/eosio/bin/cleos", $"-u http://0.0.0.0:8888 --wallet-url http://0.0.0.0:8888 push action {name} {method} {argsJson} -p {name}@active");
+            var contractFolder = ConcatPath(contractAccount);
+            var startInfo = new ProcessStartInfo("/opt/eosio/bin/cleos", $"-u http://0.0.0.0:8888 --wallet-url http://0.0.0.0:8888 push action {contractAccount} {method} {argsJson} -p {invokerAccount}");
             startInfo.UseShellExecute = false;
             var process = Process.Start(startInfo);
             process.WaitForExit();
@@ -302,6 +321,13 @@ namespace Dasdaq.Dev.Agent.Services
             {
                 ImportPrivateKey(x);
             }
+        }
+
+        private void DeployEosioToken()
+        {
+            const string eosioToken = "eosio.token";
+            SaveContract(eosioToken, File.ReadAllText($"Token/{eosioToken}.cpp"), File.ReadAllText($"Token/{eosioToken}.hpp"));
+            CompileAndPublishContract(eosioToken);
         }
         
         private class GetChainInfoResponseBody

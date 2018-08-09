@@ -21,6 +21,7 @@ component.methods = {
         })
         .then(x => {
             app.notification("succeeded", "实例" + self.name + "部署成功，正在启动...");
+            qv.createView('/api/instance', {}, 5 * 1000).refresh();
             app.redirect('/instance');
         })
         .catch(err => {
