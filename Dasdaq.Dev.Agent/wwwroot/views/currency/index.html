@@ -13,15 +13,15 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="cur in currencies" v-bind:id="'currency-' + x">
+            <tr v-for="cur in currencies" v-bind:id="'currency-' + cur">
                 <td>{{ cur }}</td>
                 <td>
-                    <select>
-                        <option v-for="x in accounts">{{ x }}</option>
+                    <select class="btn">
+                        <option v-for="x in accounts">{{ cur }}</option>
                     </select>
                 </td>
                 <td><input type="text" class="textbox" value="1000.0000" /></td>
-                <td><input type="button" class="btn" v-on:click="supply(x)" value="Issue" /></td>
+                <td><input type="button" class="btn" v-on:click="supply(cur)" value="Issue" /></td>
             </tr>
             <tr>
                 <td><input type="text" class="textbox" v-model="currency.name" placeholder="代币名称，如EOS" /></td>

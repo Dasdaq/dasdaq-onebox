@@ -276,3 +276,7 @@ pre {
     color: #fff;
     background: none;
 }
+
+select option {
+    color: #000;
+}
