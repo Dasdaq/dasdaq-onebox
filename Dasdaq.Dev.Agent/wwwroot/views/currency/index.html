@@ -1,7 +1,6 @@
 ﻿<div>
     <div class="nav-bar">
         <a v-on:click="$root.redirect('/')"><i class="fa fa-chevron-left"></i> 返回菜单</a>
-        <a v-on:click="$root.redirect('/contract/new')" class="right"><i class="fa fa-plus"></i> 部署合约</a>
         <div class="clear"></div>
     </div>
     <table class="table">
@@ -25,10 +24,10 @@
                 <td><input type="button" class="btn" v-on:click="supply(x)" /></td>
             </tr>
             <tr>
-                <td><input type="text" class="textbox" v-model="new.name" placeholder="代币名称，如EOS" /></td>
-                <td><input type="text" class="textbox" v-model="new.account" placeholder="收币账户" /></td>
-                <td><input type="text" class="textbox" v-model="new.amount" placeholder="数量" /></td>
-                <td><input type="button" class="btn" v-on:click="new()" /></td>
+                <td><input type="text" class="textbox" v-model="currency.name" placeholder="代币名称，如EOS" /></td>
+                <td><input type="text" class="textbox" v-model="currency.account" placeholder="收币账户" /></td>
+                <td><input type="text" class="textbox" v-model="currency.amount" placeholder="数量" /></td>
+                <td><input type="button" class="btn" v-on:click="newCurrency()" /></td>
             </tr>
         </tbody>
     </table>

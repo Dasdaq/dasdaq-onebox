@@ -1,6 +1,6 @@
 ﻿component.data = function () {
     return {
-        new: {
+        currency: {
             name: null,
             amount: "1000000000.0000",
             account: "eosio.token"
@@ -36,19 +36,19 @@ component.methods = {
                 app.notification("error", currency + "发放失败", err.responseJSON.msg);
             });
     },
-    new: function () {
+    newCurrency: function () {
         var self = this;
-        app.notification("pending", `正在创建${self.new.amount} ${self.new.name}...`);
-        qv.put('/api/eos/currency/' + self.new.name, {
-            account: self.new.account,
-            amount: self.new.amount
+        app.notification("pending", `正在创建${self.currency.amount} ${self.currency.name}...`);
+        qv.put('/api/eos/currency/' + self.currency.name, {
+            account: self.currency.account,
+            amount: self.currency.amount
         })
             .then(x => {
                 self.currencyView.refresh();
                 app.notification("succeeded", `${amount} ${currency}已经创建成功`);
-                self.new.name = null;
-                self.new.amount = "1000000000.0000";
-                self.new.account = "eosio.token";
+                self.currency.name = null;
+                self.currency.amount = "1000000000.0000";
+                self.currency.account = "eosio.token";
             })
             .catch(err => {
                 app.notification("error", `${amount} ${currency}创建失败`, err.responseJSON.msg);
