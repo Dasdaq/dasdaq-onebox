@@ -29,7 +29,7 @@ component.methods = {
         app.notification("pending", `正在为${account}发放${amount} ${currency}...`);
         qv.post('/api/eos/currency/' + currency + '/account/' + account, { amount: amount })
             .then(x => {
-                app.notification("succeeded", `已经成功为${account}发放${amount} ${currency}`);
+                app.notification("succeeded", `${currency}已经成功发放`);
                 app.redirect('/contract');
             })
             .catch(err => {
@@ -45,13 +45,13 @@ component.methods = {
         })
             .then(x => {
                 self.currencyView.refresh();
-                app.notification("succeeded", `${amount} ${currency}已经创建成功`);
+                app.notification("succeeded", `${self.currency.amount} ${self.currency.name}已经创建成功`);
                 self.currency.name = null;
                 self.currency.amount = "1000000000.0000";
                 self.currency.account = "eosio.token";
             })
             .catch(err => {
-                app.notification("error", `${amount} ${currency}创建失败`, err.responseJSON.msg);
+                app.notification("error", `${self.currency.amount} ${self.currency.name}创建失败`, err.responseJSON.msg);
             });
     }
 };
