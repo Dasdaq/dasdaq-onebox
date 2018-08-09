@@ -88,7 +88,7 @@ namespace Dasdaq.Dev.Agent.Services
             InvokeContract(eosioToken, "create", eosioToken, account, $"{amount.ToString("0.0000")} {currency}");
             _ef.Currencies.Add(new Currency
             {
-                Name = account,
+                Name = currency,
                 BaseAccount = account
             });
             _ef.SaveChanges();
