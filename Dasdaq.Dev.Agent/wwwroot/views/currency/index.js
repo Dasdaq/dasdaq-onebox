@@ -30,7 +30,6 @@ component.methods = {
         qv.post('/api/eos/currency/' + currency + '/account/' + account, { amount: amount })
             .then(x => {
                 app.notification("succeeded", `${currency}已经成功发放`);
-                app.redirect('/contract');
             })
             .catch(err => {
                 app.notification("error", currency + "发放失败", err.responseJSON.msg);
