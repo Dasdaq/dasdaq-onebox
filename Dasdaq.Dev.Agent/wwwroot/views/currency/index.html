@@ -25,7 +25,11 @@
             </tr>
             <tr>
                 <td><input type="text" class="textbox" v-model="currency.name" placeholder="代币名称，如EOS" /></td>
-                <td><input type="text" class="textbox" v-model="currency.account" placeholder="收币账户" /></td>
+                <td>
+                    <select class="btn" v-model="currency.account">
+                        <option v-for="x in accounts">{{ x }}</option>
+                    </select>
+                </td>
                 <td><input type="text" class="textbox" v-model="currency.amount" placeholder="数量" /></td>
                 <td><input type="button" class="btn" v-on:click="newCurrency()" value="Create" /></td>
             </tr>
