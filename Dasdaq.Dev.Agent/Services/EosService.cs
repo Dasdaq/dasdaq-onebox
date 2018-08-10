@@ -151,7 +151,7 @@ namespace Dasdaq.Dev.Agent.Services
             Console.WriteLine($"[Dasdaq Dev Agent] Invoking {contractAccount} {method}.");
             var argsJson = JsonConvert.SerializeObject(args);
             var contractFolder = ConcatPath(contractAccount);
-            var startInfo = new ProcessStartInfo("/opt/eosio/bin/cleos", $"-u http://0.0.0.0:8888 --wallet-url http://0.0.0.0:8888 push action {contractAccount} {method} {argsJson} -p {invokerAccount}");
+            var startInfo = new ProcessStartInfo("/opt/eosio/bin/cleos", $"-u http://0.0.0.0:8888 --wallet-url http://0.0.0.0:8888 push action {contractAccount} {method} '{argsJson}' -p {invokerAccount}");
             startInfo.UseShellExecute = false;
             var process = Process.Start(startInfo);
             process.WaitForExit();
