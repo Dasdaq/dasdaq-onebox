@@ -103,17 +103,15 @@ namespace Dasdaq.Dev.Agent.Services
             }
             InvokeContract(eosioToken, "issue", cur.BaseAccount, account, $"{amount.ToString("0.0000")} {currency}", "");
         }
-
+        
         public void DownloadAndDeployContracts()
         {
-            // Start git to clone smart contracts
             var config = JsonConvert.DeserializeObject<Config>(File.ReadAllText("config.json"));
-            Console.WriteLine($"[Dasdaq Dev Agent] Cloning contracts repo: {config.Contracts}.");
-            var startInfo = new ProcessStartInfo("git", $"clone {config.Contracts}");
-            startInfo.UseShellExecute = false;
-            startInfo.WorkingDirectory = _tempFolderPath;
-            var process = Process.Start(startInfo);
-            process.WaitForExit();
+
+            // Start git to clone smart contracts
+            CleanUpContractFolder();
+            CloneContractRepo();
+
             var contracts = Directory.EnumerateDirectories(Path.Combine(_tempFolderPath, config.ContractsPath));
             Console.WriteLine($"[Dasdaq Dev Agent] Downloaded {contracts.Count()} contracts.");
             var pendingPublishContracts = new List<string>();
@@ -151,9 +149,12 @@ namespace Dasdaq.Dev.Agent.Services
             Console.WriteLine($"[Dasdaq Dev Agent] Invoking {contractAccount} {method}.");
             var argsJson = JsonConvert.SerializeObject(args);
             var contractFolder = ConcatPath(contractAccount);
-            var startInfo = new ProcessStartInfo("/opt/eosio/bin/cleos", $"-u http://0.0.0.0:8888 --wallet-url http://0.0.0.0:8888 push action {contractAccount} {method} '{argsJson}' -p {invokerAccount}");
+            var startInfo = new ProcessStartInfo("bash");
             startInfo.UseShellExecute = false;
+            startInfo.RedirectStandardInput = true;
             var process = Process.Start(startInfo);
+            process.StandardInput.WriteLine($"cleos -u http://0.0.0.0:8888 --wallet-url http://0.0.0.0:8888 push action {contractAccount} {method} '{argsJson}' -p {invokerAccount}");
+            process.StandardInput.Close();
             process.WaitForExit();
         }
 
@@ -321,6 +322,27 @@ namespace Dasdaq.Dev.Agent.Services
             {
                 ImportPrivateKey(x);
             }
+        }
+
+        private void CloneContractRepo()
+        {
+            // Start git to clone smart contracts
+            var config = JsonConvert.DeserializeObject<Config>(File.ReadAllText("config.json"));
+            Console.WriteLine($"[Dasdaq Dev Agent] Cloning contracts repo: {config.Contracts}.");
+            var startInfo = new ProcessStartInfo("git", $"clone {config.Contracts}");
+            startInfo.UseShellExecute = false;
+            startInfo.WorkingDirectory = _tempFolderPath;
+            var process = Process.Start(startInfo);
+            process.WaitForExit();
+        }
+
+        private void CleanUpContractFolder()
+        {
+            var config = JsonConvert.DeserializeObject<Config>(File.ReadAllText("config.json"));
+            var endpoint = config.Contracts.TrimEnd('/');
+            var folder = endpoint.Substring(endpoint.LastIndexOf('/') + 1);
+            var path = Path.Combine(_tempFolderPath, folder);
+            Directory.Delete(path, true);
         }
 
         private void DeployEosioToken()
