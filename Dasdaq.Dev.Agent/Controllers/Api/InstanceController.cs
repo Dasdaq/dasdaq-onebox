@@ -37,7 +37,7 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
         [HttpPatch("{id}")]
         public ApiResult Put(string id, [FromBody] PutInstanceRequestBody request,
             [FromServices] AgentContext ef, [FromServices] IServiceProvider services,
-            [FromServices] InstanceService ins)
+            [FromServices] DappService ins)
         {
             if (ins.IsInstanceExisted(id))
             {
@@ -46,7 +46,7 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
 
             Task.Factory.StartNew(async () => {
                 using (var serviceScope = services.GetRequiredService<IServiceScopeFactory>().CreateScope())
-                using (var _ins = serviceScope.ServiceProvider.GetService<InstanceService>())
+                using (var _ins = serviceScope.ServiceProvider.GetService<DappService>())
                 {
                     await _ins.DownloadAndStartInstanceAsync(id, request.Method, request.Data);
                 }
@@ -56,7 +56,7 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
         }
 
         [HttpDelete("{id}")]
-        public ApiResult Delete(string id, [FromServices] AgentContext ef, [FromServices] InstanceService ins)
+        public ApiResult Delete(string id, [FromServices] AgentContext ef, [FromServices] DappService ins)
         {
             var instance = ef.Instances.SingleOrDefault(x => x.Name == id);
             if (instance == null)
@@ -64,7 +64,7 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
                 return ApiResult(404, "Not Found");
             }
 
-            ins.StopInstance(id);
+            ins.StopDapp(id);
 
             return ApiResult(200, "Succeeded");
         }

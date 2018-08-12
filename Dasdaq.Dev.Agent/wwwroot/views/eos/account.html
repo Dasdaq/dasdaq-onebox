@@ -1,0 +1,27 @@
+﻿<div>
+    <div class="container">
+        <table class="table">
+            <colgroup>
+                <col style="width: 280px;" />
+                <col />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>账号</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="x in account">
+                    <td>{{ x }}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><input type="text" class="textbox" v-model="addAccount" placeholder="请输入账号名称" /></td>
+                    <td><a class="btn btn-small" v-on:click="addAccount()"><i class="fa fa-plus"></i> 创建账号</a></td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>

@@ -13,7 +13,7 @@
     }
 
     if (dom.find('#code-editor2').length && !dom.find('#code-editor2')[0].editor) {
-        var editor = ace.edit("code-editor");
+        var editor = ace.edit("code-editor2");
         dom.find('#code-editor2')[0].editor = editor;
         editor.setTheme("ace/theme/twilight");
         editor.session.setMode('ace/mode/c_cpp');

@@ -1,7 +1,22 @@
 ﻿{
-  "publicKey": "EOS52RoHiJhnnMXL29QmfoYZXXhfgtXfy77xd3p5oULmkPYNHgdYJ",
-  "privateKey": "5J8XWnJizAmLBsraD2ZwrFJrndHQ5RKJTfxGkQb8EDsqhZSSJ7F",
-  "contracts": "https://github.com/Andoromeda-Foundation/dapp-examples",
-  "contractsPath": "dapp-examples/Contracts/EOS",
-  "instances": [ "https://github.com/Dasdaq/Dasdaq-web" ]
+  "eos": {
+    "keyPair": {
+      "publicKey": "EOS52RoHiJhnnMXL29QmfoYZXXhfgtXfy77xd3p5oULmkPYNHgdYJ",
+      "privateKey": "5J8XWnJizAmLBsraD2ZwrFJrndHQ5RKJTfxGkQb8EDsqhZSSJ7F"
+    },
+    "contracts": {
+      "git": "https://github.com/Andoromeda-Foundation/dapp-examples",
+      "folder": "Contracts/EOS"
+    },
+    "plugins": [
+      "eosio::wallet_api_plugin",
+      "eosio::wallet_plugin",
+      "eosio::producer_plugin",
+      "eosio::history_plugin",
+      "eosio::chain_api_plugin",
+      "eosio::history_api_plugin",
+      "eosio::http_plugin"
+    ]
+  },
+  "dapp": [ "https://github.com/Dasdaq/Dasdaq-web" ]
 }

@@ -5,6 +5,8 @@
             currentNotification: null,
             notifications: [],
             notificationLock: false,
+            nav: [],
+            title: ''
         }
     },
     created: function () {
@@ -12,6 +14,11 @@
     watch: {
     },
     methods: {
+        tryRedirect: function (to) {
+            if (to) {
+                app.redirect(to);
+            }
+        },
         resolveUrl: function (to) {
             if (typeof to === 'string')
                 return to;

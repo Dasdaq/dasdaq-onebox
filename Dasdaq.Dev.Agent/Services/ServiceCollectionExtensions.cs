@@ -7,7 +7,8 @@ namespace Dasdaq.Dev.Agent.Services
         public static IServiceCollection AddAgentServices(this IServiceCollection self)
         {
             return self.AddScoped<EosService>()
-                .AddScoped<InstanceService>();
+                .AddScoped<DappService>()
+                .AddSingleton<ProcessService>();
         }
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Dasdaq.Dev.Agent.Models;
 using Dasdaq.Dev.Agent.Services;
 using Swashbuckle.AspNetCore.Swagger;
+using Dasdaq.Dev.Agent.Hubs;
 
 namespace Dasdaq.Dev.Agent
 {
@@ -12,6 +13,7 @@ namespace Dasdaq.Dev.Agent
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSignalR();
             services.AddMvc();
             services.AddMemoryCache()
                 .AddDbContext<AgentContext>(x => x.UseInMemoryDatabase());
@@ -28,6 +30,10 @@ namespace Dasdaq.Dev.Agent
         {
             app.UseErrorHandlingMiddleware();
             app.UseStaticFiles();
+            app.UseSignalR(x =>
+            {
+                x.MapHub<AgentHub>("signalr/agent");
+            });
             app.UseSwagger();
             app.UseSwaggerUI(c =>
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Dasdaq"));

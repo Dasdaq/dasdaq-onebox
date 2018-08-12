@@ -12,14 +12,29 @@
             <tbody class="thin">
                 <tr>
                     <td>EOS节点状态</td>
-                    <td>未启动</td>
+                    <td>{{ status }}</td>
+                </tr>
+                <tr v-if="status === '正在运行'">
+                    <td>Chain ID</td>
+                    <td>{{ chainId }}</td>
+                </tr>
+                <tr v-if="status === '正在运行'">
+                    <td>Public Key</td>
+                    <td>{{ keys.public }}</td>
+                </tr>
+                <tr v-if="status === '正在运行'">
+                    <td>Private Key</td>
+                    <td>{{ keys.private }}</td>
                 </tr>
             </tbody>
         </table>
         <div class="section-title">节点操作</div>
         <div>
-            <a class="btn"><i class="fa fa-play"></i> 启动节点</a>
-            <a class="btn"><i class="fa fa-eye"></i> 查看日志流</a>
+            <a class="btn" v-if="status !== '正在运行' && status !== '正在启动'" v-on:click="launch(false)"><i class="fa fa-play"></i> 启动节点</a>
+            <a class="btn" v-if="status !== '正在运行' && status !== '正在启动'" v-on:click="launch(true)"><i class="fa fa-play"></i> 安全启动节点</a>
+            <a class="btn" v-if="status !== '未启动'" v-on:click="stop(false)"><i class="fa fa-stop"></i> 停止节点</a>
+            <a class="btn" v-if="status !== '未启动'" v-on:click="stop(true)"><i class="fa fa-stop"></i> 强制停止节点</a>
+            <a class="btn" v-if="logStreamId" v-on:click="$root.viewLogStream(logStreamId)"><i class="fa fa-eye"></i> 查看日志流</a>
         </div>
     </div>
 

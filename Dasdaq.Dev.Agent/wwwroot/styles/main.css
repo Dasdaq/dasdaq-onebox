@@ -1,192 +1,269 @@
+html {
+    height: 100%;
+    overflow: hidden;
+}
+
 body {
     background: url(../images/bg.jpg) no-repeat center center fixed;
     background-size: cover;
+    margin: 0;
+    height: 100%;
+}
+
+.nav {
+    background: rgba(0,0,0,0.85);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    position: fixed;
+    width: 280px;
+    left: 0;
+    height: 100%;
+    top: 0;
+}
+
+.nav-logo {
+    text-align: center;
+    padding: 30px 0 0 0;
+}
+
+.nav-ver {
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+    padding-bottom: 15px;
+}
+
+.nav-logo img {
+    width: 160px;
+}
+
+.nav-menu {
+    display: absolute;
+    top: 105px;
+    left: 0;
+    height: calc(100% - 105px);
+    overflow-y: auto;
+}
+
+.nav-menu-item {
+    font-size: 14px;
+    color: #aaa;
+    line-height: 24px;
+    padding: 10px 25px;
+    transition: all 0.2s linear;
+}
+
+    .nav-menu-item:hover, .nav-menu-item.active {
+        color: #fff;
+        background: rgba(255,255,255,0.1);
+        cursor: pointer;
+    }
+
+.nav-menu-icon {
+    background: #aaa;
+    color: #000;
+    font-size: 14px;
+    line-height: 24px;
+    width: 24px;
+    height: 24px;
+    border-radius: 5px;
+    text-align: center;
+    margin-right: 5px;
+    transition: all 0.2s linear;
+}
+
+.nav-menu-group {
+    font-size: 12px;
+    color: #fff;
+    line-height: 24px;
+    background: #333;
+    padding: 0 15px;
+}
+
+.nav-menu-item:hover .nav-menu-icon.yellow, .nav-menu-item.active .nav-menu-icon.yellow {
+    background: #dcb827;
+    color: #fff;
+}
+
+.nav-menu-item:hover .nav-menu-icon.blue, .nav-menu-item.active .nav-menu-icon.blue {
+    background: #3766eb;
+    color: #fff;
+}
+
+.nav-menu-item:hover .nav-menu-icon.green, .nav-menu-item.active .nav-menu-icon.green {
+    background: #2cab26;
+    color: #fff;
+}
+
+.nav-menu-item:hover .nav-menu-icon.pink, .nav-menu-item.active .nav-menu-icon.pink {
+    background: #d73297;
+    color: #fff;
+}
+
+.nav-menu-item:hover .nav-menu-icon.orange, .nav-menu-item.active .nav-menu-icon.orange {
+    background: #ce7139;
+    color: #fff;
+}
+
+.nav-menu-item:hover .nav-menu-icon.cyan, .nav-menu-item.active .nav-menu-icon.cyan {
+    background: #2cb79b;
+    color: #fff;
+}
+
+.nav-menu-item:hover .nav-menu-icon.purple, .nav-menu-item.active .nav-menu-icon.purple {
+    background: #8b30c4;
+    color: #fff;
+}
+
+.nav-menu-item:hover .nav-menu-icon.red, .nav-menu-item.active .nav-menu-icon.red {
+    background: #ff4040;
+    color: #fff;
 }
 
 .main {
-    margin-top: 150px;
-}
-
-.logo-outer {
-    height: 80px;
-    text-align: center;
-}
-
-.logo-outer img {
-    height: 80px;
+    position: fixed;
+    width: calc(100% - 280px);
+    height: 100%;
+    left: 280px;
+    top: 0;
+    overflow-y: auto;
+    color: #fff;
 }
 
 .container {
-    margin: 0 auto;
-    margin-top: 80px;
-    width: 700px;
+    padding: 25px;
 }
 
-.button {
-    border-radius: 10px;
-    width: 100px;
-    height: 100px;
-    background: #000;
+.main-title {
+    font-size: 24px;
+    line-height: 108px;
+    padding: 0 25px;
+}
+
+.main-nav {
+    font-size: 10px;
     color: #fff;
-    box-shadow: 0 0 15px rgba(0,0,0,0.3);
-    transition: box-shadow 0.2s linear;
+    line-height: 24px;
+    background: rgba(255,255,255,0.2);
+    padding: 0 25px;
 }
 
-.button.red {
-    background: linear-gradient(#f7146f,#de254c);
-}
-
-.button.green {
-    background: linear-gradient(#1bc342,#1e8a13);
-}
-
-.button.blue {
-    background: linear-gradient(#1b76c3,#245ead);
-}
-
-.button.yellow {
-    background: linear-gradient(#bdc30f,#9e8522);
-}
-
-.button.gray {
-    background: linear-gradient(#8e8e8e,#595959);
-}
-
-.button.orange {
-    background: linear-gradient(#f77a14,#bb5d11);
-}
-
-.button-outer {
+.btn {
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    background: rgba(255,255,255,0.5);
+    color: #000;
     text-align: center;
-    width: 100px;
-    float: left;
-    margin: 20px;
+    min-width: 40px;
+    display: inline-block;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    transition: all 0.2s linear;
     cursor: pointer;
 }
 
-.button-text {
-    font-size: 14px;
+.btn-small {
+    font-size: 10px;
+    padding: 5px 10px;
+    line-height: 10px;
+}
+
+    .btn:hover {
+        background: rgba(255,255,255,0.85);
+    }
+
+.container {
     color: #fff;
-    text-shadow: 0 0 10px rgba(0,0,0.3);
-    width: 100%;
-    line-height: 40px;
-    height: 40px;
-    transition: text-shadow 0.2s linear;
-}
-
-.button-outer:hover .button {
-    box-shadow: 0 0 15px rgba(255,255,255,0.5);
-}
-
-.button-outer:hover .button-text {
-    text-shadow: 0 0 10px rgba(255,255,255,0.5);
-}
-
-.button i {
-    height: 100px;
-    line-height: 100px;
-    font-size: 48px;
 }
 
 .table {
-    width: 100%;
     border-collapse: collapse;
+    width: 100%;
+    color: #fff;
     font-size: 12px;
-    color: #eee;
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
 
-.table th {
-    font-weight: 500;
+    .table thead {
+        background: rgba(255,255,255,0.1);
+    }
+
+    .table tr {
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .table th {
+        text-align: left;
+        font-weight: normal;
+    }
+
+    .table thead {
+        border-top: 2px solid #ccc;
+        border-bottom: 2px solid #ccc;
+    }
+
+    .table tbody {
+        border-bottom: 2px solid #ccc;
+    }
+
+        .table tbody.thin {
+            border-bottom: 1px solid #ccc;
+        }
+
+    .table th, .table td {
+        font-size: 12px;
+        padding: 8px 15px;
+    }
+
+.tab {
+    background: rgba(255,255,255,0.15);
+    padding: 10px 25px;
+    font-size: 14px;
+    color: #fff;
+    border-top: 1px solid #aaa;
+    border-bottom: 1px solid #aaa;
+    margin-top: -1px;
+    cursor: pointer;
 }
 
-.table tr {
-    border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
+.tab-active {
+    visibility: hidden;
+    display: none;
 }
 
-.table td, .table th {
-    padding: 10px 8px;
+.tab-inactive {
+    visibility: visible;
+    display: inline-block;
 }
 
-.clear {
-    clear: both;
+.tab.active .tab-active {
+    visibility: visible;
+    display: inline-block;
 }
 
-.right {
+.tab.active .tab-inactive {
+    visibility: hidden;
+    display: none;
+}
+
+.tab-icon {
+    margin-right: 8px;
+}
+
+.tab:first-child {
+    margin-top: 0;
+}
+
+.tab-toggle-btn {
     float: right;
-}
-
-.nav-bar {
-    padding: 20px 0;
-    color: #fff;
-}
-
-.status.green {
-    color: #32d921;
-}
-
-.status.blue {
-    color: #35c6f0;
-}
-
-.status.red {
-    color: rgb(255,128,128);
-}
-
-a {
     cursor: pointer;
 }
 
-pre {
-    height: 400px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-}
-
-.textbox {
-    display: block;
-    border: 2px solid rgba(255,255,255,0.8);
-    background: none;
-    color: #fff;
+.section-title {
     font-size: 16px;
-    padding: 8px 10px;
-    width: -webkit-fill-available;
+    margin-bottom: 15px;
 }
-
-.content {
-    color: #fff;
-}
-
-.form-label {
-    margin-bottom: 10px;
-}
-
-.form-input {
-    margin-bottom: 20px;
-}
-
-.upload-method {
-    color: rgba(255,255,255,0.7);
-    line-height: 30px;
-    display: inline-block;
-    cursor: pointer;
-}
-
-    .upload-method.active {
-        color: #21ab13;
-    }
-
-.select-file-button {
-    padding: 8px 10px;
-    border: 2px solid rgba(255,255,255,0.7);
-    color: rgba(255,255,255,0.7);
-    cursor: pointer;
-    display: inline-block;
-}
-
-    .select-file-button:hover {
-        background: rgba(255,255,255,0.7);
-        color: #333;
-    }
 
 .notification {
     position: fixed;
@@ -256,27 +333,27 @@ pre {
         text-decoration: none;
     }
 
-.eos-status {
-    color: #fff;
-    text-align: center;
+.tab-outer {
+    display: none;
 }
 
-.table-command {
-    color: rgba(255,255,255,0.5);
-    transition: color 0.2s linear;
+.tab-outer.active {
+    display: block;
 }
 
-.table-command:hover {
+.textbox {
+    border: 1px solid #fff;
     color: #fff;
-}
-
-.btn {
-    padding: 10px 15px;
-    border: 2px solid #fff;
-    color: #fff;
+    padding: 5px 10px;
+    outline: 0;
     background: none;
+    font-size: 12px;
 }
 
-select option {
+pre {
+    height: 300px;
+}
+
+select {
     color: #000;
 }

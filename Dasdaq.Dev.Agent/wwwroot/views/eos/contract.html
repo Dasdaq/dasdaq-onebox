@@ -1,0 +1,48 @@
+﻿<div>
+    <div class="tab" v-bind:class="{ 'active': active === 'contractList' }" v-on:click="openTab('contractList')">
+        <i class="tab-icon fa fa-ticket"></i> 智能合约列表
+        <span class="tab-toggle-btn"><i class="tab-active fa fa-angle-up"></i><i class="tab-inactive fa fa-angle-down"></i></span>
+    </div>
+    <div class="container tab-outer" v-bind:class="{ 'active': active === 'contractList' }" id="contractList">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>合约名称</th>
+                    <th>合约账号</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="x in contracts">
+                    <td>{{ x.name }}</td>
+                    <td>{{ x.name }}@active, {{x.name}}@owner</td>
+                    <td>{{ x.status }}</td>
+                    <td>
+                        <a v:on="edit(x)" class="btn btn-small"><i class="fa fa-edit"></i> 编辑合约</a>
+                    </td>
+                </tr>
+                <tr v-if="contracts.length === 0">
+                    <td colspan="4">No Result</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="tab" v-bind:class="{ 'active': active === 'upload' }" v-on:click="openTab('upload')">
+        <i class="tab-icon fa fa-edit"></i> 上传/编辑合约
+        <span class="tab-toggle-btn"><i class="tab-active fa fa-angle-up"></i><i class="tab-inactive fa fa-angle-down"></i></span>
+    </div>
+
+    <div class="container tab-outer" v-bind:class="{ 'active': active === 'upload' }" id="upload">
+        <div class="section-title">合约名称</div>
+        <div class="form-input"><input class="textbox" v-model="name" placeholder="合约名称，如counter" /></div>
+        <br />
+        <div class="section-title">{{ name || "untitled" }}.cpp</div>
+        <div class="form-input"><pre id="code-editor" class="ace_editor ace-twilight ace_dark"></pre></div>
+        <div class="section-title">{{ name || "untitled" }}.hpp (可选)</div>
+        <div class="form-input"><pre id="code-editor2" class="ace_editor ace-twilight ace_dark"></pre></div>
+        <br />
+        <div><a class="btn"><i class="fa fa-upload"></i> 上传智能合约</a></div>
+    </div>
+</div>

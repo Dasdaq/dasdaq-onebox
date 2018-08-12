@@ -5,21 +5,27 @@
             amount: "1000000000.0000",
             account: "eosio.token"
         },
-        currencies: [],
-        accounts: [],
-        currencyView: null
+        account: [],
+        currency: [],
+        views: {
+            account: null,
+            currency: null
+        }
     };
 };
 
 component.created = function () {
     var self = this;
-    self.currencyView = qv.createView('/api/eos/currency', {}, 5 * 1000);
-    self.currencyView.fetch(x => {
-        self.currencies = x.data;
-    });
-    qv.createView('/api/eos/account', {}, 5 * 1000).fetch(x => {
-        self.accounts = x.data;
-    });
+    app.control.title = '代币管理';
+    app.control.nav = [{ text: '代币管理', to: '/eos/currency' }];
+    self.views.account = qv.createView('/api/eos/account', {}, 10 * 1000)
+        .fetch(x => {
+            self.account = x.data;
+        });
+    self.views.currency = qv.createView('/api/eos/currency', {})
+        .fetch(x => {
+            self.currency = x.data;
+        });
 };
 
 component.methods = {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Dasdaq.Dev.Agent.Models;
@@ -31,6 +32,29 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
         [HttpPatch("config")]
         public ApiResult Config([FromBody] Config config)
         {
+            System.IO.File.WriteAllText("config.json", JsonConvert.SerializeObject(config));
+            return ApiResult(200, "Succeeded");
+        }
+
+        [HttpPut("config/plugins")]
+        [HttpPost("config/plugins")]
+        [HttpPatch("config/plugins")]
+        public ApiResult ConfigPlugins([FromBody] IEnumerable<string> request)
+        {
+            var config = JsonConvert.DeserializeObject<Config>(System.IO.File.ReadAllText("config.json"));
+            config.eos.plugins = request;
+            System.IO.File.WriteAllText("config.json", JsonConvert.SerializeObject(config));
+            return ApiResult(200, "Succeeded");
+        }
+
+
+        [HttpPut("config/keyPair")]
+        [HttpPost("config/keyPair")]
+        [HttpPatch("config/keyPair")]
+        public ApiResult ConfigKeyPair([FromBody] ConfigEosKeyPair request)
+        {
+            var config = JsonConvert.DeserializeObject<Config>(System.IO.File.ReadAllText("config.json"));
+            config.eos.keyPair = request;
             System.IO.File.WriteAllText("config.json", JsonConvert.SerializeObject(config));
             return ApiResult(200, "Succeeded");
         }

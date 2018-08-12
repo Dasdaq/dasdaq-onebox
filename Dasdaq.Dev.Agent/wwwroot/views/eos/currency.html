@@ -1,0 +1,36 @@
+﻿<div>
+    <div class="container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>币种</th>
+                    <th>账号</th>
+                    <th>数量</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="cur in currency" v-bind:id="'currency-' + cur">
+                    <td>{{ cur }}</td>
+                    <td>
+                        <select class="btn">
+                            <option v-for="x in account">{{ x }}</option>
+                        </select>
+                    </td>
+                    <td><input type="text" class="textbox" value="1000.0000" /></td>
+                    <td><a class="btn btn-small" v-on:click="supply(cur)"><i class="fa fa-random"></i> 颁发</a></td>
+                </tr>
+                <tr>
+                    <td><input type="text" class="textbox" v-model="currency.name" placeholder="代币名称，如EOS" /></td>
+                    <td>
+                        <select class="textbox" v-model="currency.account">
+                            <option v-for="x in account">{{ x }}</option>
+                        </select>
+                    </td>
+                    <td><input type="text" class="textbox" v-model="currency.amount" placeholder="数量" /></td>
+                    <td><a class="btn btn-small" v-on:click="newCurrency()"><i class="fa fa-plus"></i> 创建代币</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

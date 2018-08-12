@@ -24,9 +24,36 @@
     <title></title>
 </head>
 <body>
-    <div class="main">
-        <div class="logo-outer"><img src="/images/dasdaq.svg" /></div>
-        <div class="container" id="app">
+    <div class="nav" id="app">
+        <div class="nav-logo">
+            <img src="/images/dasdaq.svg" />
+        </div>
+        <div class="nav-ver">EOS OneBox v0.9.0</div>
+        <div class="nav-menu">
+            <div class="nav-menu-group">EOS测试链</div>
+            <div class="nav-menu-item" v-on:click="$root.redirect('/eos')" v-bind:class="{ 'active': $root.control.nav.some(x => x.text === '测试链节点') }"><i class="nav-menu-icon yellow fa fa-link"></i> 测试链节点</div>
+            <div class="nav-menu-item" v-on:click="$root.redirect('/eos/contract')" v-bind:class="{ 'active': $root.control.nav.some(x => x.text === '智能合约') }"><i class="nav-menu-icon blue fa fa-ticket"></i> 智能合约</div>
+            <div class="nav-menu-item" v-on:click="$root.redirect('/eos/account')" v-bind:class="{ 'active': $root.control.nav.some(x => x.text === '钱包账号') }"><i class="nav-menu-icon green fa fa-lock"></i> 钱包账号</div>
+            <div class="nav-menu-item" v-on:click="$root.redirect('/eos/currency')" v-bind:class="{ 'active': $root.control.nav.some(x => x.text === '代币管理') }"><i class="nav-menu-icon pink fa fa-btc"></i> 代币管理</div>
+            <div class="nav-menu-group">Dapp</div>
+            <div class="nav-menu-item" v-on:click="$root.redirect('/dapp')" v-bind:class="{ 'active': $root.control.nav.some(x => x.text === 'Dapp列表') }"><i class="nav-menu-icon cyan fa fa-microchip"></i> Dapp列表</div>
+            <div class="nav-menu-item" v-on:click="$root.redirect('/dapp/git')" v-bind:class="{ 'active': $root.control.nav.some(x => x.text === '通过Git安装Dapp') }"><i class="nav-menu-icon orange fa fa-github"></i> 通过Git安装Dapp</div>
+            <div class="nav-menu-item" v-on:click="$root.redirect('/dapp/zip')" v-bind:class="{ 'active': $root.control.nav.some(x => x.text === '上传Zip安装Dapp') }"><i class="nav-menu-icon purple fa fa-file-zip-o"></i> 上传Zip安装Dapp</div>
+            <div class="nav-menu-group">OneBox</div>
+            <div class="nav-menu-item"><i class="nav-menu-icon orange fa fa-rotate-left"></i> 重置OneBox</div>
+            <div class="nav-menu-item"><i class="nav-menu-icon red fa fa-power-off"></i> 终止OneBox</div>
+        </div>
+        <div class="main">
+            <div class="main-title">{{ $root.control.title }}</div>
+            <div class="main-nav">
+                <span>Dasdaq OneBox</span>
+                <template v-for="x in $root.control.nav">
+                    &nbsp;
+                    <i class="fa fa-angle-double-right"></i>
+                    &nbsp;
+                    <span v-on:click="tryRedirect(x.to)">{{ x.text }}</span>
+                </template>
+            </div>
             <router-view></router-view>
             <!-- start notifications -->
             <div class="notification" v-bind:class="{ 'active': control.currentNotification !== null, 'pending': control.currentNotification && control.currentNotification.level === 'pending', 'succeeded': control.currentNotification && control.currentNotification.level === 'succeeded', 'warning': control.currentNotification && control.currentNotification.level === 'warning', 'error': control.currentNotification && control.currentNotification.level === 'error', 'important': control.currentNotification && control.currentNotification.level === 'important' }">
@@ -39,5 +66,6 @@
             <!-- end notifications -->
         </div>
     </div>
+
 </body>
 </html>

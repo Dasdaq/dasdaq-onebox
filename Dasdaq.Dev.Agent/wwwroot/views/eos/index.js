@@ -1,10 +1,13 @@
 ﻿component.data = function () {
     return {
         status: null,
+        chainId: null,
         active: 'nodeControl',
         plugins: [],
+        logStreamId: null,
         views: {
-            config: null
+            config: null,
+            status: null
         },
         addPluginName: null,
         keys: {
@@ -18,9 +21,11 @@ component.created = function () {
     var self = this;
     app.control.title = '测试链节点';
     app.control.nav = [{ text: '测试链节点', to: '/' }];
-    qv.createView('/api/eos/status', {}, 10 * 1000)
+    self.views.status = qv.createView('/api/eos/status', {}, 10 * 1000)
         .fetch(x => {
-            self.status = x.data;
+            self.status = x.data.status;
+            self.chainId = x.data.chainId;
+            self.logStreamId = x.data.logStreamId;
         });
     self.views.config = qv.createView('/api/onebox/config', {})
         .fetch(x => {
@@ -46,6 +51,20 @@ component.methods = {
                 app.notification("error", "插件添加失败", err.responseJSON.msg);
             });
     },
+    removePlugin: function (x) {
+        var self = this;
+        var index = self.plugins.indexOf(x);
+        self.plugins.splice(index, 1);
+        app.notification("pending", `正在删除插件${x}...`);
+        qv.patch('/api/onebox/config/plugins', self.plugins)
+            .then(() => {
+                app.notification("succeeded", `插件${x}删除成功`);
+                self.views.config.refresh();
+            })
+            .catch(err => {
+                app.notification("error", "插件删除失败", err.responseJSON.msg);
+            });
+    },
     openTab: function (tab) {
         if (this.active === tab) {
             return;
@@ -56,11 +75,12 @@ component.methods = {
         this.active = tab;
         $('#' + tab).slideDown();
     },
-    startEos: function () {
+    launch: function (safe) {
         app.notification("pending", "正在启动EOS测试链...");
-        qv.post('/api/eos/init', {})
+        qv.post('/api/eos/init?safeMode=' + (safe ? 'true' : 'false'), {})
             .then(x => {
                 app.notification("succeeded", "EOS测试链已经启动成功");
+                self.views.status.refresh();
             })
             .catch(err => {
                 app.notification("error", "测试链已经启动失败", err.responseJSON.msg);

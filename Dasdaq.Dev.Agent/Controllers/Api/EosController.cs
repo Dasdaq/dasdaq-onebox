@@ -13,14 +13,14 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
     [Route("api/[controller]")]
     public class EosController : BaseController
     {
-        private static LaunchStatus _status = LaunchStatus.PendingLaunch;
+        private static LaunchStatus _status = LaunchStatus.未启动;
         
         [HttpPut("init")]
         [HttpPost("init")]
         [HttpPatch("init")]
-        public ApiResult Init()
+        public ApiResult Init(bool? safeMode)
         {
-            if (_status != LaunchStatus.PendingLaunch)
+            if (_status != LaunchStatus.未启动)
             {
                 return ApiResult(409, $"The EOS is under {_status} status.");
             }
@@ -29,17 +29,23 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
                 using (var serviceScope = HttpContext.RequestServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 using (var eos = serviceScope.ServiceProvider.GetService<EosService>())
                 {
-                    _status = LaunchStatus.Launching;
-                    eos.Launch();
-                    _status = LaunchStatus.Launched;
+                    _status = LaunchStatus.正在启动;
+                    if (eos.Launch(safeMode.HasValue ? safeMode.Value : false))
+                    {
+                        _status = LaunchStatus.正在运行;
+                    }
+                    else
+                    {
+                        _status = LaunchStatus.启动失败;
+                    }
                 }
             });
 
 
-            var instances = JsonConvert.DeserializeObject<Config>(System.IO.File.ReadAllText("config.json")).Instances;
+            var instances = JsonConvert.DeserializeObject<Config>(System.IO.File.ReadAllText("config.json")).dapp;
             Task.Factory.StartNew(() => {
                 using (var serviceScope = HttpContext.RequestServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-                using (var ins = serviceScope.ServiceProvider.GetService<InstanceService>())
+                using (var ins = serviceScope.ServiceProvider.GetService<DappService>())
                 {
                     if (instances == null)
                     {
@@ -59,9 +65,19 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
         }
 
         [HttpGet("status")]
-        public ApiResult<string> Status()
+        public async Task<ApiResult<GetEosStatusResponse>> Status([FromServices] EosService eos)
         {
-            return ApiResult(_status.ToString());
+            string chainId = null;
+            if (_status == LaunchStatus.正在运行)
+            {
+                chainId = await eos.RetriveChainIdAsync();
+            }
+            return ApiResult(new GetEosStatusResponse
+            {
+                Status = _status.ToString(),
+                ChainId = chainId,
+                LogStreamId = eos.GetOneBoxProcId()
+            });
         }
         
         [HttpGet("contract")]
@@ -145,13 +161,6 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
         {
             eos.IssueCurrency(currency, account, request.amount);
             return ApiResult(200, "Succeeded");
-        }
-
-        private enum LaunchStatus
-        {
-            PendingLaunch,
-            Launching,
-            Launched
         }
     }
 }
