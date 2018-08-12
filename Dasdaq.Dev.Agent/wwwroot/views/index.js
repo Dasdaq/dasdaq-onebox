@@ -52,6 +52,9 @@
         clickNotification: function () {
             this._releaseNotification();
         },
+        viewLogStream: function (id) {
+
+        },
         _showNotification: function (manualRelease) {
             var self = this;
             if (!this.control.notificationLock && this.control.notifications.length) {
