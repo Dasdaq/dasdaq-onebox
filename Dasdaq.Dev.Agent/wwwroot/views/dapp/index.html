@@ -1,0 +1,27 @@
+﻿<div class="container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Dapp</th>
+                <th>运行时间</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="x in dapp">
+                <td>{{ x.name }}</td>
+                <td>{{ x.startTime }}</td>
+                <td>{{ x.status }}</td>
+                <td>
+                    <a class="btn btn-small" v-on:click="kill(x.name)"><i class="fa fa-stop"></i> 结束实例</a>
+                    <a class="btn btn-small"><i class="fa fa-eye"></i> 查看日志流</a>
+                </td>
+            </tr>
+
+            <tr v-if="dapp.length === 0">
+                <td colspan="4">No Result</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

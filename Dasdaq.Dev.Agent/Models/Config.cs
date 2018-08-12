@@ -4,14 +4,29 @@ namespace Dasdaq.Dev.Agent.Models
 {
     public class Config
     {
-        public string PublicKey { get; set; }
+        public ConfigEos eos { get; set; }
+        
+        public IEnumerable<string> dapp { get; set; }
+    }
 
-        public string PrivateKey { get; set; }
+    public class ConfigEos
+    {
+        public IEnumerable<string> plugins { get; set; }
 
-        public string Contracts { get; set; }
+        public ConfigEosKeyPair keyPair { get; set; }
 
-        public string ContractsPath { get; set; }
+        public ConfigEosContracts contracts { get; set; }
+    }
 
-        public IEnumerable<string> Instances { get; set; }
+    public class ConfigEosKeyPair
+    {
+        public string publicKey { get; set; }
+        public string privateKey { get; set; }
+    }
+
+    public class ConfigEosContracts
+    {
+        public string git { get; set; }
+        public string folder { get; set; }
     }
 }

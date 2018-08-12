@@ -23,6 +23,8 @@ namespace Dasdaq.Dev.Agent.Models
         [Key]
         public string Name { get; set; }
 
+        public Guid OneBoxId { get; set; }
+
         public int? ExitCode { get; set; }
 
         public DateTime StartTime { get; set; } = DateTime.Now;

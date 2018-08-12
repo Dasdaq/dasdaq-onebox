@@ -1,0 +1,20 @@
+﻿<div class="container">
+    <table class="table">
+        <colgroup>
+            <col style="width: 200px" />
+            <col />
+        </colgroup>
+        <tr>
+            <td>实例名称</td>
+            <td><input class="textbox" v-model="name" placeholder="实例名称，如frontend" /></td>
+        </tr>
+        <tr>
+            <td>{{ !fileData ? '选择ZIP压缩包文件' : '已选择ZIP文件' }}</td>
+            <td>
+                <a v-on:click="selectFile()" class="btn btn-small"><i class="fa fa-upload"></i> {{ fileData ? '更换ZIP文件' : '上传ZIP文件' }}</a>
+            </td>
+        </tr>
+    </table>
+
+    <div><a class="btn"><i class="fa fa-plus" v-on:click="upload()"></i> 安装Dapp</a></div>
+</div>

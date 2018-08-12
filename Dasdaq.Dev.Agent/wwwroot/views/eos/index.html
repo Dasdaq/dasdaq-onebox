@@ -1,0 +1,76 @@
+﻿<div>
+    <div class="tab" v-bind:class="{ 'active': active === 'nodeControl' }" v-on:click="openTab('nodeControl')">
+        <i class="tab-icon fa fa-window-restore"></i> EOS节点控制
+        <span class="tab-toggle-btn"><i class="tab-active fa fa-angle-up"></i><i class="tab-inactive fa fa-angle-down"></i></span>
+    </div>
+    <div class="container tab-outer" v-bind:class="{ 'active': active === 'nodeControl' }" id="nodeControl">
+        <div class="section-title">节点状态</div>
+        <table class="table">
+            <colgroup>
+                <col style="width: 120px;" />
+            </colgroup>
+            <tbody class="thin">
+                <tr>
+                    <td>EOS节点状态</td>
+                    <td>未启动</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="section-title">节点操作</div>
+        <div>
+            <a class="btn"><i class="fa fa-play"></i> 启动节点</a>
+            <a class="btn"><i class="fa fa-eye"></i> 查看日志流</a>
+        </div>
+    </div>
+
+    <div class="tab" v-bind:class="{ 'active': active === 'plugins' }" v-on:click="openTab('plugins')">
+        <i class="tab-icon fa fa-cog"></i> 插件设置
+        <span class="tab-toggle-btn"><i class="tab-active fa fa-angle-up"></i><i class="tab-inactive fa fa-angle-down"></i></span>
+    </div>
+
+    <div class="container tab-outer" v-bind:class="{ 'active': active === 'plugins' }" id="plugins">
+        <table class="table">
+            <colgroup>
+                <col style="width: 280px;" />
+                <col />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>EOS插件</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="x in plugins">
+                    <td>{{ x }}</td>
+                    <td><a class="btn btn-small" v-on:click="removePlugin(x)"><i class="fa fa-remove"></i> 删除插件</a></td>
+                </tr>
+                <tr>
+                    <td><input type="text" class="textbox" v-model="addPluginName" placeholder="请输入插件名称" /></td>
+                    <td><a class="btn btn-small" v-on:click="addPlugin()"><i class="fa fa-plus"></i> 添加插件</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="tab" v-bind:class="{ 'active': active === 'keyPair' }" v-on:click="openTab('keyPair')">
+        <i class="tab-icon fa fa-key"></i> 密钥对设置
+        <span class="tab-toggle-btn"><i class="tab-active fa fa-angle-up"></i><i class="tab-inactive fa fa-angle-down"></i></span>
+    </div>
+
+
+    <div class="container tab-outer" v-bind:class="{ 'active': active === 'keyPair' }" id="keyPair">
+        <table class="table">
+            <colgroup>
+                <col style="width: 180px;" />
+                <col />
+            </colgroup>
+            <tbody class="thin">
+                <tr><td>Public Key</td><td><input type="text" class="textbox" v-model="keys.public" /></td></tr>
+                <tr><td>Private Key</td><td><input type="text" class="textbox" v-model="keys.private" /></td></tr>
+            </tbody>
+        </table>
+        <div><a class="btn"><i class="fa fa-save"></i> 保存</a></div>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+﻿<div class="container">
+    <table class="table">
+        <colgroup>
+            <col style="width: 200px" />
+            <col />
+        </colgroup>
+        <tr>
+            <td>实例名称</td>
+            <td><input class="textbox" v-model="name" placeholder="Dapp名称，如frontend" /></td>
+        </tr>
+        <tr>
+            <td>Git仓库地址</td>
+            <td><input class="textbox" v-model="gitUrl" placeholder="请在此处填写Dapp的Git仓库地址" /></td>
+        </tr>
+    </table>
+    <div><a class="btn"><i class="fa fa-plus" v-on:click="upload()"></i> 安装Dapp</a></div>
+</div>
