@@ -20,7 +20,7 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
         [HttpPatch("init")]
         public ApiResult Init(bool? safeMode)
         {
-            if (_status != LaunchStatus.未启动)
+            if (_status != LaunchStatus.未启动 && _status != LaunchStatus.启动失败)
             {
                 return ApiResult(409, $"The EOS is under {_status} status.");
             }
@@ -62,6 +62,25 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
             });
 
             return ApiResult(201, "Lauching...");
+        }
+
+        public ApiResult Stop(bool? safeMode, [FromServices] EosService eos)
+        {
+            if (_status != LaunchStatus.正在运行 && _status != LaunchStatus.正在启动)
+            {
+                return ApiResult(409, $"The EOS is under {_status} status.");
+            }
+
+            if (safeMode.HasValue && safeMode.Value)
+            {
+                eos.GracefulShutdown();
+            }
+            else
+            {
+                eos.ForceShutdown();
+            }
+            _status = LaunchStatus.未启动;
+            return ApiResult(200, "Succeeded");
         }
 
         [HttpGet("status")]

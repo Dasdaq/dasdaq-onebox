@@ -85,5 +85,16 @@ component.methods = {
             .catch(err => {
                 app.notification("error", "测试链已经启动失败", err.responseJSON.msg);
             });
+    },
+    stop: function (safe) {
+        app.notification("pending", "正在停止EOS测试链...");
+        qv.post('/api/eos/stop?safeMode=' + (safe ? 'true' : 'false'), {})
+            .then(x => {
+                app.notification("succeeded", "EOS测试链已经停止成功");
+                self.views.status.refresh();
+            })
+            .catch(err => {
+                app.notification("error", "测试链停止失败", err.responseJSON.msg);
+            });
     }
 };
