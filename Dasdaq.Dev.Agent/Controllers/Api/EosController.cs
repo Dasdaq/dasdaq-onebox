@@ -18,7 +18,7 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
         [HttpPut("init")]
         [HttpPost("init")]
         [HttpPatch("init")]
-        public ApiResult Init(bool? safeMode)
+        public async Task<ApiResult> Init(bool? safeMode)
         {
             if (_status != LaunchStatus.未启动 && _status != LaunchStatus.启动失败)
             {
@@ -43,7 +43,7 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
 
 
             var instances = JsonConvert.DeserializeObject<Config>(System.IO.File.ReadAllText("config.json")).dapp;
-            Task.Factory.StartNew(() => {
+            await Task.Factory.StartNew(() => {
                 using (var serviceScope = HttpContext.RequestServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 using (var ins = serviceScope.ServiceProvider.GetService<DappService>())
                 {

@@ -15,7 +15,7 @@
                 <td>{{ x.status }}</td>
                 <td>
                     <a class="btn btn-small" v-on:click="kill(x.name)"><i class="fa fa-stop"></i> 结束实例</a>
-                    <a class="btn btn-small"><i class="fa fa-eye"></i> 查看日志流</a>
+                    <a class="btn btn-small" v-if="x.oneBoxId !== '00000000-0000-0000-0000-000000000000'" v-on:click="$root.viewLogStream(x.oneBoxId)"><i class="fa fa-eye"></i> 查看日志流</a>
                 </td>
             </tr>
 

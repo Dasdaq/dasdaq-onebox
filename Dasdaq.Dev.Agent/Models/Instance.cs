@@ -7,6 +7,7 @@ namespace Dasdaq.Dev.Agent.Models
 {
     public enum InstanceStatus
     {
+        Launching,
         Running,
         Succeeded,
         Failed

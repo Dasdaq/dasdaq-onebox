@@ -53,12 +53,13 @@ namespace Dasdaq.Dev.Agent.Services
         
         public Task DownloadAndStartInstanceAsync(string name, InstanceUploadMethod method, string data)
         {
+            Console.WriteLine("[Dasdaq Dev Agent] Downloading Dapp " + name);
             _ef.Instances.Add(new Instance
             {
                 UploadMethod = method,
                 Data = data,
                 Name = name,
-                Status = InstanceStatus.Running
+                Status = InstanceStatus.Launching
             });
             _ef.SaveChanges();
 
@@ -77,6 +78,10 @@ namespace Dasdaq.Dev.Agent.Services
                             throw new NotSupportedException();
                     }
                     var process = StartInstance(name);
+                    var _instance = _ef.Instances.Single(x => x.Name == name);
+                    _instance.OneBoxId = process.Id;
+                    _instance.Status = InstanceStatus.Running;
+                    _ef.SaveChanges();
                     _dic.Add(name, process);
                 }
                 catch (Exception ex)
@@ -148,9 +153,11 @@ namespace Dasdaq.Dev.Agent.Services
             var workDirectory = GetWorkingDirectory(name);
             if (Directory.Exists(workDirectory))
             {
+                Console.WriteLine("[Dasdaq Dev Agent] " + name + " is already existed, removing...");
                 Directory.Delete(workDirectory, true);
             }
             Directory.CreateDirectory(workDirectory);
+            Console.WriteLine("[Dasdaq Dev Agent] Creating " + name + " work directory...");
             return workDirectory;
         }
 

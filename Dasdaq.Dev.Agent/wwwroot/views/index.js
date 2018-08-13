@@ -12,16 +12,17 @@
     },
     created: function () {
         this.signalr = new signalR.HubConnectionBuilder()
-            .configureLogging(signalR.LogLevel.Trace)
+            .configureLogging(signalR.LogLevel.Error)
             .withUrl('/signalr/agent', {})
             .withHubProtocol(new signalR.JsonHubProtocol())
             .build();
         this.signalr.on('onLogReceived', (id, isError, text) => {
-            console.warn(id, isError, text);
-            $('[data-log-stream="' + id + '"]').append("\r\n" + text);
-            setTimeout(() => {
-                $('[data-log-stream]').scrollTop($('[data-log-stream]')[0].scrollHeight);
-            }, 100);
+            if ($('[data-log-stream="' + id + '"]').length > 0) {
+                $('[data-log-stream="' + id + '"]').append("\r\n" + text);
+                setTimeout(() => {
+                    $('[data-log-stream]').scrollTop($('[data-log-stream]')[0].scrollHeight);
+                }, 100);
+            }
         });
         this.signalr.start();
     },

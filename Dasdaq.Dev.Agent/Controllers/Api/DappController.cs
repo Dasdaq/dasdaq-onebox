@@ -11,7 +11,7 @@ using Dasdaq.Dev.Agent.Services;
 namespace Dasdaq.Dev.Agent.Controllers.Api
 {
     [Route("api/[controller]")]
-    public class InstanceController : BaseController
+    public class DappController : BaseController
     {
         [HttpGet]
         public ApiResult<IEnumerable<Instance>> Get([FromServices] AgentContext ef)

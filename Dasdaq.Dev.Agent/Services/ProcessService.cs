@@ -32,7 +32,7 @@ namespace Dasdaq.Dev.Agent.Services
 
         public OneBoxProcess StartProcess(ProcessStartInfo startInfo, Action<Guid, Log> pushLogFunc = null, string alias = null)
         {
-            var ret = new OneBoxProcess() { Alias = alias };
+            var ret = new OneBoxProcess() { Alias = alias, Id = Guid.NewGuid() };
             var process = new Process();
             startInfo.RedirectStandardError = true;
             startInfo.RedirectStandardOutput = true;
