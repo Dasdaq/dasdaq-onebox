@@ -13,7 +13,8 @@ component.created = function () {
     var self = this;
     app.control.title = '智能合约';
     app.control.nav = [{ text: '智能合约', to: '/eos/contract' }];
-    self.views.contract = qv.createView('/api/eos/contract', {}, 5 * 1000)
+    self.views.contract = qv.createView('/api/eos/contract', {}, 5 * 1000);
+    self.views.contract
         .fetch(x => {
             self.contracts = x.data;
         });

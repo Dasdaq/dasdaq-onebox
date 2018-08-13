@@ -21,13 +21,15 @@ component.created = function () {
     var self = this;
     app.control.title = '测试链节点';
     app.control.nav = [{ text: '测试链节点', to: '/' }];
-    self.views.status = qv.createView('/api/eos/status', {}, 10 * 1000)
+    self.views.status = qv.createView('/api/eos/status', {}, 5 * 1000);
+    self.views.status
         .fetch(x => {
             self.status = x.data.status;
             self.chainId = x.data.chainId;
             self.logStreamId = x.data.logStreamId;
         });
-    self.views.config = qv.createView('/api/onebox/config', {})
+    self.views.config = qv.createView('/api/onebox/config', {});
+    self.views.config
         .fetch(x => {
             self.plugins = x.data.eos.plugins;
             self.keys.public = x.data.eos.keyPair.publicKey;
@@ -76,6 +78,7 @@ component.methods = {
         $('#' + tab).slideDown();
     },
     launch: function (safe) {
+        var self = this;
         app.notification("pending", "正在启动EOS测试链...");
         qv.post('/api/eos/init?safeMode=' + (safe ? 'true' : 'false'), {})
             .then(x => {

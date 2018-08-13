@@ -354,6 +354,22 @@ pre {
     height: 300px;
 }
 
-select {
+option {
     color: #000;
+}
+
+.log {
+    color: #fff;
+    background: #000;
+    padding: 15px;
+    margin: 15px;
+    width: calc(100% - 60px);
+    height: calc(100% - 50px);
+    border-radius: 5px;
+    font-family: Consolas;
+    overflow-y: auto;
+}
+
+.log-outer {
+    height: calc(100% - 147px);
 }

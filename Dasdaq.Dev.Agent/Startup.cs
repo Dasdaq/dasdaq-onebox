@@ -30,6 +30,7 @@ namespace Dasdaq.Dev.Agent
         {
             app.UseErrorHandlingMiddleware();
             app.UseStaticFiles();
+            app.UseWebSockets();
             app.UseSignalR(x =>
             {
                 x.MapHub<AgentHub>("signalr/agent");

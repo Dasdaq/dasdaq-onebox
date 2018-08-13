@@ -60,6 +60,8 @@ namespace Dasdaq.Dev.Agent.Services
             };
             _dic.Add(ret.Id, ret);
             process.Start();
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
             return ret;
         }
 

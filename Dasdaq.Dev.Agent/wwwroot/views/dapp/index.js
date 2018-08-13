@@ -11,7 +11,8 @@ component.created = function () {
     var self = this;
     app.control.title = 'Dapp列表';
     app.control.nav = [{ text: 'Dapp列表', to: '/dapp' }];
-    self.views.dapp = qv.createView('/api/dapp', {}, 10 * 1000)
+    self.views.dapp = qv.createView('/api/dapp', {}, 10 * 1000);
+    self.views.dapp
         .fetch(x => {
             self.dapp = x.data;
         });

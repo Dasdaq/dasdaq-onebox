@@ -18,11 +18,13 @@ component.created = function () {
     var self = this;
     app.control.title = '代币管理';
     app.control.nav = [{ text: '代币管理', to: '/eos/currency' }];
-    self.views.account = qv.createView('/api/eos/account', {}, 10 * 1000)
+    self.views.account = qv.createView('/api/eos/account', {});
+    self.views.account
         .fetch(x => {
             self.account = x.data;
         });
-    self.views.currency = qv.createView('/api/eos/currency', {})
+    self.views.currency = qv.createView('/api/eos/currency', {});
+    self.views.currency
         .fetch(x => {
             self.currency = x.data;
         });

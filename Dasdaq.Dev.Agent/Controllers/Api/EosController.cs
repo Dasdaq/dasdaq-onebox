@@ -64,6 +64,9 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
             return ApiResult(201, "Lauching...");
         }
 
+        [HttpPut("stop")]
+        [HttpPost("stop")]
+        [HttpPatch("stop")]
         public ApiResult Stop(bool? safeMode, [FromServices] EosService eos)
         {
             if (_status != LaunchStatus.正在运行 && _status != LaunchStatus.正在启动)

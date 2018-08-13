@@ -122,13 +122,17 @@ namespace Dasdaq.Dev.Agent.Services
             _oneboxProc = null;
         }
 
-        public CommandResult ExecuteCommand(string command)
+        public CommandResult ExecuteCommand(string command, string workDir = null)
         {
             var startInfo = new ProcessStartInfo("bash");
             startInfo.UseShellExecute = false;
             startInfo.RedirectStandardOutput = true;
             startInfo.RedirectStandardError = true;
             startInfo.RedirectStandardInput = true;
+            if (workDir != null)
+            {
+                startInfo.WorkingDirectory = workDir;
+            }
             var process = Process.Start(startInfo);
             process.StandardInput.WriteLine(command);
             process.StandardInput.Close();
@@ -159,14 +163,14 @@ namespace Dasdaq.Dev.Agent.Services
             return ExecuteCommand($"cleos -u http://0.0.0.0:8888 --wallet-url http://0.0.0.0:8888 {command}");
         }
 
-        public CommandResult ExecuteEosioCppCommand(string command)
+        public CommandResult ExecuteEosioCppCommand(string command, string workDir)
         {
-            return ExecuteCommand($"eosiocpp {command}");
+            return ExecuteCommand($"eosiocpp {command}", workDir);
         }
 
-        public CommandResult ExecuteGitCommand(string command)
+        public CommandResult ExecuteGitCommand(string command, string workDir)
         {
-            return ExecuteCommand($"git {command}");
+            return ExecuteCommand($"git {command}", workDir);
         }
 
         public bool CreateAccount(string name)
@@ -177,6 +181,7 @@ namespace Dasdaq.Dev.Agent.Services
 
             if (!result.IsSucceeded)
             {
+                Console.WriteLine("[Dasdaq Dev Agent] Create account process returned " + result.ExitCode);
                 return false;
             }
 
@@ -321,7 +326,14 @@ namespace Dasdaq.Dev.Agent.Services
             var pluginsCommand = string.Join(' ', config.eos.plugins.Select(x => $"--plugin {x}"));
             var startInfo = new ProcessStartInfo("/opt/eosio/bin/nodeos", $"-e -p eosio {pluginsCommand} -d /mnt/dev/data --config-dir /mnt/dev/config --http-server-address=0.0.0.0:8888 --access-control-allow-origin=* --contracts-console --http-validate-host=false --delete-all-blocks");
             _oneboxProc = _proc.StartProcess(startInfo, async (id, x) => {
-                await _hub.Clients.All.InvokeAsync("onLogReceived", id, x.IsError, x.Text);
+                try
+                {
+                    await _hub.Clients.All.InvokeAsync("onLogReceived", id, x.IsError, x.Text);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("[Dasdaq Dev Agent] " + ex.ToString());
+                }
             }, "nodeos");
             Task.Factory.StartNew(()=> {
                 // Start bash to launch nodeos
@@ -453,7 +465,14 @@ namespace Dasdaq.Dev.Agent.Services
                 Time = DateTime.Now
             });
 
-            _hub.Clients.All.InvokeAsync("onLogReceived", _oneboxProc.Id, isError, text);
+            try
+            {
+                _hub.Clients.All.InvokeAsync("onLogReceived", _oneboxProc.Id, isError, text);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("[Dasdaq Dev Agent] " + ex.ToString());
+            }
         }
 
         private bool CloneContractRepo()
@@ -461,7 +480,7 @@ namespace Dasdaq.Dev.Agent.Services
             // Start git to clone smart contracts
             var config = JsonConvert.DeserializeObject<Config>(File.ReadAllText("config.json"));
             Console.WriteLine($"[Dasdaq Dev Agent] Cloning contracts repo: {config.eos.contracts.git}.");
-            var result = ExecuteGitCommand($"clone {config.eos.contracts.git}");
+            var result = ExecuteGitCommand($"clone {config.eos.contracts.git}", _tempFolderPath);
             return result.IsSucceeded;
         }
 
@@ -471,7 +490,11 @@ namespace Dasdaq.Dev.Agent.Services
             var endpoint = config.eos.contracts.git.TrimEnd('/');
             var folder = endpoint.Substring(endpoint.LastIndexOf('/') + 1);
             var path = Path.Combine(_tempFolderPath, folder);
-            Directory.Delete(path, true);
+            try
+            {
+                Directory.Delete(path, true);
+            }
+            catch (DirectoryNotFoundException) { }
         }
 
         private bool DeployEosioToken()
@@ -499,12 +522,12 @@ namespace Dasdaq.Dev.Agent.Services
             Console.WriteLine($"[Dasdaq Dev Agent] Publishing contract {name}.");
             var contractFolder = ConcatPath(name);
             UnlockWallet();
-            if (CreateAccount(name))
+            if (!CreateAccount(name))
             {
                 Console.WriteLine($"[Dasdaq Dev Agent] Create contract account failed.");
                 return false;
             }
-            if (MapContractToAccount(name))
+            if (!MapContractToAccount(name))
             {
                 Console.WriteLine($"[Dasdaq Dev Agent] Map contract to account failed.");
                 return false;
@@ -535,8 +558,7 @@ namespace Dasdaq.Dev.Agent.Services
         private ContractCompileResult CompileContractWast(string name)
         {
             // Start eosiocpp to compile smart contract
-            var contractFolder = ConcatPath(name);
-            var result = ExecuteEosioCppCommand($"-o {Path.Combine(contractFolder, name + ".wast")} {Path.Combine(contractFolder, name + ".cpp")}");
+            var result = ExecuteEosioCppCommand($"-o {Path.Combine(name, name + ".wast")} {Path.Combine(name, name + ".cpp")}", _contractsFolderPath);
             return new ContractCompileResult
             {
                 IsSucceeded = result.IsSucceeded,
@@ -548,7 +570,7 @@ namespace Dasdaq.Dev.Agent.Services
         {
             // Start eosiocpp to compile smart contract
             var contractFolder = ConcatPath(name);
-            var result = ExecuteEosioCppCommand($"-g {Path.Combine(contractFolder, name + ".abi")} {Path.Combine(contractFolder, name + ".cpp")}");
+            var result = ExecuteEosioCppCommand($"-g {Path.Combine(name, name + ".abi")} {Path.Combine(name, name + ".cpp")}", _contractsFolderPath);
             return new ContractCompileResult
             {
                 IsSucceeded = result.IsSucceeded,

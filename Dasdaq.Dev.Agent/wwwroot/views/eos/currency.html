@@ -13,7 +13,7 @@
                 <tr v-for="cur in currency" v-bind:id="'currency-' + cur">
                     <td>{{ cur }}</td>
                     <td>
-                        <select class="btn">
+                        <select class="btn btn-small">
                             <option v-for="x in account">{{ x }}</option>
                         </select>
                     </td>
@@ -23,7 +23,7 @@
                 <tr>
                     <td><input type="text" class="textbox" v-model="currency.name" placeholder="代币名称，如EOS" /></td>
                     <td>
-                        <select class="textbox" v-model="currency.account">
+                        <select class="btn btn-small" v-model="currency.account">
                             <option v-for="x in account">{{ x }}</option>
                         </select>
                     </td>

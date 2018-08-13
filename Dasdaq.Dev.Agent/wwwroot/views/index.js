@@ -7,9 +7,17 @@
             notificationLock: false,
             nav: [],
             title: ''
-        }
+        },
+        signalr: null
     },
     created: function () {
+        this.signalr = new signalR.HubConnection('/signalr/agent');
+        this.signalr.on('onLogReceived', (id, isError, text) => {
+            console.warn(id, isError, text);
+            $('[data-log-stream="' + id + '"]').append("\r\n" + text);
+            $('[data-log-stream="' + id + '"]').scrollTop($('[data-log-stream="' + id + '"]')[0].scrollHeight);
+        });
+        this.signalr.start();
     },
     watch: {
     },
@@ -53,7 +61,7 @@
             this._releaseNotification();
         },
         viewLogStream: function (id) {
-
+            this.redirect('/log/:id', '/log/' + id, { id: id });
         },
         _showNotification: function (manualRelease) {
             var self = this;
