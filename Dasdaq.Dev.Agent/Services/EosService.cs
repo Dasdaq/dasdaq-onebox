@@ -498,11 +498,7 @@ namespace Dasdaq.Dev.Agent.Services
         {
             Console.WriteLine($"[Dasdaq Dev Agent] Publishing contract {name}.");
             var contractFolder = ConcatPath(name);
-            if (!UnlockWallet())
-            {
-                Console.WriteLine($"[Dasdaq Dev Agent] Unlock wallet failed.");
-                return false;
-            }
+            UnlockWallet();
             if (CreateAccount(name))
             {
                 Console.WriteLine($"[Dasdaq Dev Agent] Create contract account failed.");
