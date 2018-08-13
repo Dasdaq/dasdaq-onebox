@@ -11,11 +11,17 @@
         signalr: null
     },
     created: function () {
-        this.signalr = new signalR.HubConnection('/signalr/agent');
+        this.signalr = new signalR.HubConnectionBuilder()
+            .configureLogging(signalR.LogLevel.Trace)
+            .withUrl('/signalr/agent', {})
+            .withHubProtocol(new signalR.JsonHubProtocol())
+            .build();
         this.signalr.on('onLogReceived', (id, isError, text) => {
             console.warn(id, isError, text);
             $('[data-log-stream="' + id + '"]').append("\r\n" + text);
-            $('[data-log-stream="' + id + '"]').scrollTop($('[data-log-stream="' + id + '"]')[0].scrollHeight);
+            setTimeout(() => {
+                $('[data-log-stream]').scrollTop($('[data-log-stream]')[0].scrollHeight);
+            }, 100);
         });
         this.signalr.start();
     },

@@ -242,6 +242,11 @@ namespace Dasdaq.Dev.Agent.Services
             foreach (var x in contracts)
             {
                 var name = Path.GetFileName(x);
+                if (name == "eosio.token")
+                {
+                    continue;
+                }
+                
                 if (File.Exists(Path.Combine(x, name + ".cpp")))
                 {
                     var cpp = File.ReadAllText(Path.Combine(x, name + ".cpp"));
@@ -266,6 +271,8 @@ namespace Dasdaq.Dev.Agent.Services
         {
             if (!CompileContract(name).IsSucceeded)
             {
+                var contract = _ef.Contracts.Single(x => x.Name == name);
+                contract.Status = ContractStatus.Failed;
                 return false;
             }
             return PublishContract(name);
@@ -328,7 +335,7 @@ namespace Dasdaq.Dev.Agent.Services
             _oneboxProc = _proc.StartProcess(startInfo, async (id, x) => {
                 try
                 {
-                    await _hub.Clients.All.InvokeAsync("onLogReceived", id, x.IsError, x.Text);
+                    await _hub.Clients.All.SendAsync("onLogReceived", id, x.IsError, x.Text);
                 }
                 catch (Exception ex)
                 {
@@ -467,7 +474,7 @@ namespace Dasdaq.Dev.Agent.Services
 
             try
             {
-                _hub.Clients.All.InvokeAsync("onLogReceived", _oneboxProc.Id, isError, text);
+                _hub.Clients.All.SendAsync("onLogReceived", _oneboxProc.Id, isError, text);
             }
             catch (Exception ex)
             {
@@ -558,7 +565,7 @@ namespace Dasdaq.Dev.Agent.Services
         private ContractCompileResult CompileContractWast(string name)
         {
             // Start eosiocpp to compile smart contract
-            var result = ExecuteEosioCppCommand($"-o {Path.Combine(name, name + ".wast")} {Path.Combine(name, name + ".cpp")}", _contractsFolderPath);
+            var result = ExecuteEosioCppCommand($"-o {name + ".wast"} {name + ".cpp"}", Path.Combine(_contractsFolderPath, name));
             return new ContractCompileResult
             {
                 IsSucceeded = result.IsSucceeded,
@@ -570,7 +577,7 @@ namespace Dasdaq.Dev.Agent.Services
         {
             // Start eosiocpp to compile smart contract
             var contractFolder = ConcatPath(name);
-            var result = ExecuteEosioCppCommand($"-g {Path.Combine(name, name + ".abi")} {Path.Combine(name, name + ".cpp")}", _contractsFolderPath);
+            var result = ExecuteEosioCppCommand($"-g {name + ".abi"} {name + ".cpp"}", Path.Combine(_contractsFolderPath, name));
             return new ContractCompileResult
             {
                 IsSucceeded = result.IsSucceeded,

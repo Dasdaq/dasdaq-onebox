@@ -6,7 +6,7 @@
             account: "eosio.token"
         },
         account: [],
-        currency: [],
+        currencies: [],
         views: {
             account: null,
             currency: null
@@ -26,7 +26,7 @@ component.created = function () {
     self.views.currency = qv.createView('/api/eos/currency', {});
     self.views.currency
         .fetch(x => {
-            self.currency = x.data;
+            self.currencies = x.data;
         });
 };
 
@@ -51,7 +51,7 @@ component.methods = {
             amount: self.currency.amount
         })
             .then(x => {
-                self.currencyView.refresh();
+                self.views.currency.refresh();
                 app.notification("succeeded", `${self.currency.amount} ${self.currency.name}已经创建成功`);
                 self.currency.name = null;
                 self.currency.amount = "1000000000.0000";

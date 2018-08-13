@@ -33,7 +33,7 @@ namespace Dasdaq.Dev.Agent
             app.UseWebSockets();
             app.UseSignalR(x =>
             {
-                x.MapHub<AgentHub>("signalr/agent");
+                x.MapHub<AgentHub>("/signalr/agent");
             });
             app.UseSwagger();
             app.UseSwaggerUI(c =>

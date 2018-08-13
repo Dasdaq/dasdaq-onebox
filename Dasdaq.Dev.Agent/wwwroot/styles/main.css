@@ -368,6 +368,7 @@ option {
     border-radius: 5px;
     font-family: Consolas;
     overflow-y: auto;
+    font-size: 12px;
 }
 
 .log-outer {

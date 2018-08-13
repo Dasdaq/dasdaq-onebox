@@ -126,7 +126,7 @@ namespace Dasdaq.Dev.Agent.Services
             startInfo.UseShellExecute = false;
             startInfo.WorkingDirectory = Path.GetDirectoryName(runFile.Single());
             return _proc.StartProcess(startInfo, async (id, x) => {
-                await _hub.Clients.All.InvokeAsync("onLogReceived", id, x.IsError, x.Text);
+                await _hub.Clients.All.SendAsync("onLogReceived", id, x.IsError, x.Text);
             }, name);
         }
 
