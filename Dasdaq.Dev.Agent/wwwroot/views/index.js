@@ -8,23 +8,27 @@
             nav: [],
             title: ''
         },
-        signalr: null
+        signalr: null,
+        pause: false
     },
     created: function () {
-        this.signalr = new signalR.HubConnectionBuilder()
+        var self = this;
+        self.signalr = new signalR.HubConnectionBuilder()
             .configureLogging(signalR.LogLevel.Error)
             .withUrl('/signalr/agent', {})
             .withHubProtocol(new signalR.JsonHubProtocol())
             .build();
-        this.signalr.on('onLogReceived', (id, isError, text) => {
-            if ($('[data-log-stream="' + id + '"]').length > 0) {
-                $('[data-log-stream="' + id + '"]').append("\r\n" + text);
-                setTimeout(() => {
-                    $('[data-log-stream]').scrollTop($('[data-log-stream]')[0].scrollHeight);
-                }, 100);
+        self.signalr.on('onLogReceived', (id, isError, text) => {
+            if (!self.pause) {
+                if ($('[data-log-stream="' + id + '"]').length > 0) {
+                    $('[data-log-stream="' + id + '"]').append("\r\n" + text);
+                    setTimeout(() => {
+                        $('[data-log-stream]').scrollTop($('[data-log-stream]')[0].scrollHeight);
+                    }, 100);
+                }
             }
         });
-        this.signalr.start();
+        self.signalr.start();
     },
     watch: {
     },
@@ -69,6 +73,20 @@
         },
         viewLogStream: function (id) {
             this.redirect('/log/:id', '/log/' + id, { id: id });
+        },
+        stop: function () {
+            var self = this;
+            if (confirm("您确定要关闭OneBox吗？")) {
+                self.notification("pending", "正在停止OneBox...");
+                qv.post('/api/onebox/stop', {})
+                    .then(x => {
+                        self.notification("succeeded", "OneBox环境已停止");
+                        window.close();
+                    })
+                    .catch(err => {
+                        self.notification("error", "OneBox停止失败", err.responseJSON.msg);
+                    });
+            }
         },
         _showNotification: function (manualRelease) {
             var self = this;

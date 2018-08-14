@@ -135,7 +135,7 @@ body {
 
 .main-title {
     font-size: 24px;
-    line-height: 108px;
+    line-height: 110px;
     padding: 0 25px;
 }
 
@@ -358,13 +358,18 @@ option {
     color: #000;
 }
 
+.log-buttons {
+    margin: 10px 15px;
+    height: 50px;
+}
+
 .log {
     color: #fff;
     background: #000;
     padding: 15px;
     margin: 15px;
     width: calc(100% - 60px);
-    height: calc(100% - 50px);
+    height: calc(100% - 90px);
     border-radius: 5px;
     font-family: Consolas;
     overflow-y: auto;

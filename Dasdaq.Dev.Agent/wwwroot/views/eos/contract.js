@@ -21,6 +21,12 @@ component.created = function () {
 };
 
 component.methods = {
+    edit: function (contract) {
+        this.name = contract.name;
+        $('#code-editor')[0].editor.setValue(contract.cpp || '');
+        $('#code-editor2')[0].editor.setValue(contract.hpp || '');
+        this.openTab('upload');
+    },
     openTab: function (tab) {
         if (this.active === tab) {
             return;
@@ -41,7 +47,7 @@ component.methods = {
             .then(x => {
                 app.notification("succeeded", "智能合约" + self.name + "部署成功");
                 self.views.contract.refresh();
-                app.redirect('/contract');
+                self.openTab('contractList');
             })
             .catch(err => {
                 app.notification("error", "智能合约" + self.name + "部署失败", err.responseJSON.msg);

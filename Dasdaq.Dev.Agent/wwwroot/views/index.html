@@ -40,8 +40,8 @@
             <div class="nav-menu-item" v-on:click="$root.redirect('/dapp/git')" v-bind:class="{ 'active': $root.control.nav.some(x => x.text === '通过Git安装Dapp') }"><i class="nav-menu-icon orange fa fa-github"></i> 通过Git安装Dapp</div>
             <div class="nav-menu-item" v-on:click="$root.redirect('/dapp/zip')" v-bind:class="{ 'active': $root.control.nav.some(x => x.text === '上传Zip安装Dapp') }"><i class="nav-menu-icon purple fa fa-file-zip-o"></i> 上传Zip安装Dapp</div>
             <div class="nav-menu-group">OneBox</div>
-            <div class="nav-menu-item"><i class="nav-menu-icon orange fa fa-rotate-left"></i> 重置OneBox</div>
-            <div class="nav-menu-item"><i class="nav-menu-icon red fa fa-power-off"></i> 终止OneBox</div>
+            <!--<div class="nav-menu-item"><i class="nav-menu-icon orange fa fa-rotate-left"></i> 重置OneBox</div>-->
+            <div class="nav-menu-item" v-on:click="$root.stop()"><i class="nav-menu-icon red fa fa-power-off"></i> 终止OneBox</div>
         </div>
         <div class="main">
             <div class="main-title">{{ $root.control.title }}</div>

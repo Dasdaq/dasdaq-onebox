@@ -19,7 +19,7 @@
                     <td>{{ x.name }}@active, {{x.name}}@owner</td>
                     <td>{{ x.status }}</td>
                     <td>
-                        <a v:on="edit(x)" class="btn btn-small"><i class="fa fa-edit"></i> 编辑合约</a>
+                        <a v-on:click="edit(x)" class="btn btn-small"><i class="fa fa-edit"></i> 编辑合约</a>
                     </td>
                 </tr>
                 <tr v-if="contracts.length === 0">
@@ -43,6 +43,6 @@
         <div class="section-title">{{ name || "untitled" }}.hpp (可选)</div>
         <div class="form-input"><pre id="code-editor2" class="ace_editor ace-twilight ace_dark"></pre></div>
         <br />
-        <div><a class="btn"><i class="fa fa-upload"></i> 上传智能合约</a></div>
+        <div><a class="btn" v-on:click="upload()"><i class="fa fa-upload"></i> 上传智能合约</a></div>
     </div>
 </div>

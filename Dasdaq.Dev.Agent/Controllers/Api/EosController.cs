@@ -118,6 +118,12 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
         public ApiResult Contract(string id, [FromBody] Contract model, 
             [FromServices] IServiceProvider services, [FromServices] AgentContext ef)
         {
+            var contract = ef.Contracts.SingleOrDefault(x => x.Name == id);
+            if (contract != null && contract.Cpp.TrimEnd() == model.Cpp.TrimEnd())
+            {
+                return ApiResult(400, "合约内容没有变化，不能进行Patch");
+            }
+
             Task.Factory.StartNew(() => {
                 using (var serviceScope = services.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 using (var _eos = serviceScope.ServiceProvider.GetService<EosService>())

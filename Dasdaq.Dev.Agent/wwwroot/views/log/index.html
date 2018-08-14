@@ -1,4 +1,8 @@
 ﻿<div class="log-outer">
+    <div class="log-buttons">
+        <a class="btn btn-small" v-if="!$root.pause" v-on:click="$root.pause = true;"><i class="fa fa-pause"></i> 暂停接收</a>
+        <a class="btn btn-small" v-if="$root.pause" v-on:click="$root.pause = false;"><i class="fa fa-play"></i> 继续接收</a>
+    </div>
     <pre class="log" v-bind:data-log-stream="id"><template v-for="x in logs">{{ x.text }}
 </template></pre>
 </div>
