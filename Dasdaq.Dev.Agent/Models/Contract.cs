@@ -21,6 +21,8 @@ namespace Dasdaq.Dev.Agent.Models
 
         public string Hpp { get; set; }
 
+        public string Abi { get; set; }
+
         [JsonConverter(typeof(StringEnumConverter))]
         public ContractStatus Status { get; set; }
 

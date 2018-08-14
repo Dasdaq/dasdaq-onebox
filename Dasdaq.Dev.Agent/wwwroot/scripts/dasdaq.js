@@ -22,6 +22,17 @@
             enableSnippets: true
         });
     }
+
+    if (dom.find('#code-editor3').length && !dom.find('#code-editor3')[0].editor) {
+        var editor = ace.edit("code-editor3");
+        dom.find('#code-editor3')[0].editor = editor;
+        editor.setTheme("ace/theme/twilight");
+        editor.session.setMode('ace/mode/json');
+        editor.setOptions({
+            enableBasicAutocompletion: true,
+            enableSnippets: true
+        });
+    }
 });
 
 function clone(x) {

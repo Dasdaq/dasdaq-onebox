@@ -25,6 +25,7 @@ component.methods = {
         this.name = contract.name;
         $('#code-editor')[0].editor.setValue(contract.cpp || '');
         $('#code-editor2')[0].editor.setValue(contract.hpp || '');
+        $('#code-editor3')[0].editor.setValue(contract.abi || '');
         this.openTab('upload');
     },
     openTab: function (tab) {
@@ -42,7 +43,8 @@ component.methods = {
         app.notification("pending", "正在部署智能合约" + self.name + "...");
         qv.put('/api/eos/contract/' + this.name, {
             cpp: $('#code-editor')[0].editor.getValue(),
-            hpp: $('#code-editor2')[0].editor.getValue()
+            hpp: $('#code-editor2')[0].editor.getValue(),
+            abi: $('#code-editor3')[0].editor.getValue()
         })
             .then(x => {
                 app.notification("succeeded", "智能合约" + self.name + "部署成功");

@@ -255,7 +255,12 @@ namespace Dasdaq.Dev.Agent.Services
                     {
                         hpp = File.ReadAllText(Path.Combine(x, name + ".hpp"));
                     }
-                    SaveContract(name, cpp, hpp);
+                    string abi = null;
+                    if (File.Exists(Path.Combine(x, name + ".abi")))
+                    {
+                        abi = File.ReadAllText(Path.Combine(x, name + ".abi"));
+                    }
+                    SaveContract(name, cpp, abi, hpp);
                     pendingPublishContracts.Add(name);
                 }
             }
@@ -288,7 +293,7 @@ namespace Dasdaq.Dev.Agent.Services
             return result.IsSucceeded;
         }
 
-        public void SaveContract(string name, string cpp, string hpp = null)
+        public void SaveContract(string name, string cpp, string abi = null, string hpp = null)
         {
             Contract contract;
             var isCreate = false;
@@ -306,6 +311,7 @@ namespace Dasdaq.Dev.Agent.Services
 
             contract.Cpp = cpp;
             contract.Hpp = hpp;
+            contract.Abi = abi;
             contract.DeployedTime = DateTime.Now;
             contract.Status = ContractStatus.Updating;
             if (isCreate)
@@ -321,6 +327,10 @@ namespace Dasdaq.Dev.Agent.Services
             }
 
             File.WriteAllText(Path.Combine(contractFolder, name + ".cpp"), cpp);
+            if (abi != null)
+            {
+                File.WriteAllText(Path.Combine(contractFolder, name + ".abi"), abi);
+            }
             if (hpp != null)
             {
                 File.WriteAllText(Path.Combine(contractFolder, name + ".hpp"), hpp);
@@ -507,7 +517,7 @@ namespace Dasdaq.Dev.Agent.Services
         private bool DeployEosioToken()
         {
             const string eosioToken = "eosio.token";
-            SaveContract(eosioToken, File.ReadAllText($"Token/{eosioToken}.cpp"), File.ReadAllText($"Token/{eosioToken}.hpp"));
+            SaveContract(eosioToken, File.ReadAllText($"Token/{eosioToken}.cpp"), File.ReadAllText($"Token/{eosioToken}.abi"), File.ReadAllText($"Token/{eosioToken}.hpp"));
             return CompileAndPublishContract(eosioToken);
         }
         
@@ -518,7 +528,6 @@ namespace Dasdaq.Dev.Agent.Services
 
         private bool EnsureRemoveDefaultWallet()
         {
-            // Start cleos to unlock the wallet
             var walletPath = _walletPath;
             var result = ExecuteCommand("rm -rf " + walletPath);
             return result.IsSucceeded;
@@ -576,6 +585,14 @@ namespace Dasdaq.Dev.Agent.Services
         private ContractCompileResult CompileContractAbi(string name)
         {
             // Start eosiocpp to compile smart contract
+            if (File.Exists(Path.Combine(_contractsFolderPath, name, name + ".abi")))
+            {
+                return new ContractCompileResult
+                {
+                    IsSucceeded = true,
+                    ErrorMessage = "Skipped compile abi, abi file is already existed"
+                };
+            }
             var contractFolder = ConcatPath(name);
             var result = ExecuteEosioCppCommand($"-g {name + ".abi"} {name + ".cpp"}", Path.Combine(_contractsFolderPath, name));
             return new ContractCompileResult

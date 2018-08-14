@@ -5,11 +5,15 @@
   </PropertyGroup>
   
   <ItemGroup>
+    <None Remove="Token\eosio.token.abi" />
     <None Remove="Token\eosio.token.cpp" />
     <None Remove="Token\eosio.token.hpp" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Token\eosio.token.abi">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Token\eosio.token.cpp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
