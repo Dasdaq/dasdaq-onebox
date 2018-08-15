@@ -21,7 +21,7 @@ component.created = function () {
 component.methods = {
     kill: function (id) {
         app.notification("pending", "正在结束实例" + id + "...");
-        qv.delete('/api/instance/' + id, {})
+        qv.delete('/api/dapp/' + id, {})
             .then(() => {
                 app.notification("succeeded", "实例" + id + "结束成功");
             })
