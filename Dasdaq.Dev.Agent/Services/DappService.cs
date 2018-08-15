@@ -100,7 +100,7 @@ namespace Dasdaq.Dev.Agent.Services
             var workDirectory = EnsureWorkingDirectory(name);
             var bytes = Convert.FromBase64String(data);
             var zipFilePath = Path.Combine(workDirectory, name + ".zip");
-            File.WriteAllBytes(workDirectory, bytes);
+            File.WriteAllBytes(zipFilePath, bytes);
             using (var zip = new ZipArchive(File.OpenRead(zipFilePath)))
             {
                 zip.ExtractToDirectory(workDirectory, true);
