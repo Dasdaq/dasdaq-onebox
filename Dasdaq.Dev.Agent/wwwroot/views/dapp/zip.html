@@ -12,6 +12,7 @@
             <td>{{ !fileData ? '选择ZIP压缩包文件' : '已选择ZIP文件' }}</td>
             <td>
                 <a v-on:click="selectFile()" class="btn btn-small"><i class="fa fa-upload"></i> {{ fileData ? '更换ZIP文件' : '上传ZIP文件' }}</a>
+                <input type="file" id="file" style="display: none" />
             </td>
         </tr>
     </table>
