@@ -44,6 +44,14 @@ namespace Dasdaq.Dev.Agent.Controllers.Api
                 return ApiResult(409, "The instance is already existed.");
             }
 
+            if (request.Method == InstanceUploadMethod.Zip)
+            {
+                if (request.Data.IndexOf(",") > 0)
+                {
+                    request.Data = request.Data.Substring(request.Data.IndexOf(",") + 1);
+                }
+            }
+
             Task.Factory.StartNew(async () => {
                 using (var serviceScope = services.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 using (var _ins = serviceScope.ServiceProvider.GetService<DappService>())
