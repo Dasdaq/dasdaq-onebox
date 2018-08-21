@@ -195,6 +195,7 @@ namespace Dasdaq.Dev.Agent.Services
         
         public bool CreateCurrency(string currency, string account, double amount)
         {
+            UnlockWallet();
             var isSucceeded = InvokeContract(_eosioToken, "create", _eosioToken, account, $"{amount.ToString("0.0000")} {currency}");
             if (!isSucceeded)
             {
